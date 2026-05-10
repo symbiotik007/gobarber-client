@@ -28,7 +28,7 @@ const Overlay = styled.div`
 `;
 
 const Modal = styled.div`
-  background: #ffffff;
+  background: ${colors.bgPage};
   border-radius: 20px;
   width: 100%;
   max-width: 640px;
@@ -55,7 +55,7 @@ const HeaderLeft = styled.div``;
 const ModalTitle = styled.h2`
   font-size: 22px;
   font-weight: 700;
-  color: #1e293b;
+  color: ${colors.textPrimary};
   margin-bottom: 8px;
 `;
 
@@ -64,7 +64,7 @@ const RatingRow = styled.div`
   align-items: center;
   gap: 10px;
 
-  .score { font-size: 32px; font-weight: 700; color: #4f8ef7; line-height: 1; }
+  .score { font-size: 32px; font-weight: 700; color: ${colors.primary}; line-height: 1; }
   .count { font-size: 13px; color: rgba(15,23,42,0.35); }
 `;
 
@@ -84,7 +84,7 @@ const CloseBtn = styled.button`
 
   &:hover {
     background: rgba(79,142,247, 0.15);
-    color: #4f8ef7;
+    color: ${colors.primary};
   }
 `;
 
@@ -117,7 +117,7 @@ const Bar = styled.div`
     display: block;
     height: 100%;
     width: ${p => p.$pct}%;
-    background: linear-gradient(90deg, #4f8ef7, #93c5fd);
+    background: linear-gradient(90deg, ${colors.primary}, ${colors.primaryLighter});
     border-radius: 3px;
     transition: width 0.6s ease;
   }
@@ -154,20 +154,20 @@ const Avatar = styled.div`
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #4f8ef7, #2563eb);
+  background: linear-gradient(135deg, ${colors.primary}, ${colors.primaryDark});
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 13px;
   font-weight: 700;
-  color: #ffffff;
+  color: ${colors.textOnPrimary};
   flex-shrink: 0;
 `;
 
 const ReviewerName = styled.p`
   font-size: 15px;
   font-weight: 600;
-  color: #1e293b;
+  color: ${colors.textPrimary};
 `;
 
 const ReviewDate = styled.p`
@@ -191,9 +191,9 @@ function Stars({ rating, size = 14 }) {
   return (
     <StarsRow>
       {[1, 2, 3, 4, 5].map(n => {
-        if (rating >= n) return <FaStar key={n} size={size} color="#4f8ef7" />;
-        if (rating >= n - 0.5) return <FaStarHalfAlt key={n} size={size} color="#4f8ef7" />;
-        return <FaRegStar key={n} size={size} color="#4f8ef7" />;
+        if (rating >= n) return <FaStar key={n} size={size} color={colors.primary} />;
+        if (rating >= n - 0.5) return <FaStarHalfAlt key={n} size={size} color={colors.primary} />;
+        return <FaRegStar key={n} size={size} color={colors.primary} />;
       })}
     </StarsRow>
   );

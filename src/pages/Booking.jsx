@@ -2,6 +2,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { format, addDays, startOfDay } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { colors } from '../styles/colors';
 import styled from 'styled-components';
 import api from '../services/api';
 
@@ -14,7 +15,7 @@ const Container = styled.div`
 const BackButton = styled.button`
   background: transparent;
   border: none;
-  color: #4f8ef7;
+  color: ${colors.primary};
   font-size: 14px;
   margin-bottom: 24px;
   display: flex;
@@ -28,7 +29,7 @@ const Title = styled.h2`
 `;
 
 const Subtitle = styled.p`
-  color: #64748b;
+  color: ${colors.textMuted};
   margin-bottom: 32px;
   font-size: 14px;
 `;
@@ -39,7 +40,7 @@ const Section = styled.div`
 
 const SectionTitle = styled.h3`
   font-size: 14px;
-  color: #94a3b8;
+  color: ${colors.textSubtle};
   text-transform: uppercase;
   letter-spacing: 1px;
   margin-bottom: 16px;
@@ -53,8 +54,8 @@ const DaysRow = styled.div`
 `;
 
 const DayButton = styled.button`
-  background: ${p => p.$active ? '#4f8ef7' : '#cbd5e1'};
-  color: ${p => p.$active ? '#ffffff' : '#1e293b'};
+  background: ${p => p.$active ? colors.primary : colors.textDisabled};
+  color: ${p => p.$active ? colors.bgPage : colors.textPrimary};
   border: none;
   border-radius: 8px;
   padding: 12px 16px;
@@ -66,7 +67,7 @@ const DayButton = styled.button`
   font-size: 13px;
   transition: all 0.2s;
 
-  &:hover { background: ${p => p.$active ? '#2563eb' : '#e2e8f0'}; }
+  &:hover { background: ${p => p.$active ? colors.primaryDark : colors.border}; }
 
   strong { font-size: 20px; }
 `;
@@ -74,10 +75,10 @@ const DayButton = styled.button`
 const HourSelect = styled.select`
   width: 100%;
   padding: 14px 16px;
-  background: #f8faff;
+  background: ${colors.bgSurface};
   border: 2px solid rgba(79,142,247,0.2);
   border-radius: 10px;
-  color: #1e293b;
+  color: ${colors.textPrimary};
   font-size: 15px;
   cursor: pointer;
   appearance: none;
@@ -85,36 +86,36 @@ const HourSelect = styled.select`
   background-repeat: no-repeat;
   background-position: right 16px center;
 
-  &:focus { outline: none; border-color: #4f8ef7; }
+  &:focus { outline: none; border-color: ${colors.primary}; }
 
-  option { background: #f8faff; }
+  option { background: ${colors.bgSurface}; }
   option:disabled { color: rgba(15,23,42,0.25); }
 `;
 
 const ConfirmButton = styled.button`
   width: 100%;
   padding: 16px;
-  background: #4f8ef7;
+  background: ${colors.primary};
   border: none;
   border-radius: 10px;
-  color: #ffffff;
+  color: ${colors.bgPage};
   font-size: 16px;
   font-weight: bold;
   transition: background 0.2s;
 
-  &:hover { background: #2563eb; }
+  &:hover { background: ${colors.primaryDark}; }
   &:disabled { opacity: 0.5; cursor: not-allowed; }
 `;
 
 const SuccessBox = styled.div`
-  background: #cbd5e1;
+  background: ${colors.textDisabled};
   border-radius: 10px;
   padding: 32px;
   text-align: center;
   margin-top: 24px;
 
-  h3 { color: #4f8ef7; margin-bottom: 8px; }
-  p { color: #64748b; font-size: 14px; margin-bottom: 24px; }
+  h3 { color: ${colors.primary}; margin-bottom: 8px; }
+  p { color: ${colors.textMuted}; font-size: 14px; margin-bottom: 24px; }
 `;
 
 const HOURS = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19];

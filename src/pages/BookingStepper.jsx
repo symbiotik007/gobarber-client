@@ -2,6 +2,7 @@
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { format, addDays, startOfDay } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { colors } from '../styles/colors';
 import styled, { keyframes, createGlobalStyle } from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FiArrowLeft, FiCheck, FiCopy, FiClock, FiUser, FiMail, FiPhone, FiCalendar, FiScissors, FiAlertCircle, FiShare2, FiStar } from 'react-icons/fi';
@@ -25,8 +26,8 @@ const BARBER_SPECIALTY = {
 const Global = createGlobalStyle`
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    background: #ffffff;
-    color: #0f172a;
+    background: ${colors.bgPage};
+    color: ${colors.darkDeepest};
     font-family: 'Segoe UI', system-ui, sans-serif;
   }
 `;
@@ -47,7 +48,7 @@ const Page = styled.div`
   min-height: 100vh;
   background:
     radial-gradient(ellipse 80% 40% at 50% 0%, rgba(79,142,247,0.08) 0%, transparent 70%),
-    #ffffff;
+    ${colors.bgPage};
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -80,7 +81,7 @@ const TopBar = styled.div`
 const BackBtn = styled.button`
   background: rgba(0,0,0,0.05);
   border: 1px solid rgba(0,0,0,0.1);
-  color: #64748b;
+  color: ${colors.textMuted};
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -89,13 +90,13 @@ const BackBtn = styled.button`
   padding: 8px 12px;
   border-radius: 10px;
   transition: all 0.2s;
-  &:hover { color: #4f8ef7; border-color: rgba(79,142,247,0.4); background: rgba(79,142,247,0.06); }
+  &:hover { color: ${colors.primary}; border-color: rgba(79,142,247,0.4); background: rgba(79,142,247,0.06); }
 `;
 
 const Logo = styled.span`
   font-size: 20px;
   font-weight: 800;
-  background: linear-gradient(135deg, #4f8ef7, #93c5fd);
+  background: linear-gradient(135deg, ${colors.primary}, ${colors.primaryLighter});
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -130,9 +131,9 @@ const StepDot = styled.div`
   font-weight: 700;
   flex-shrink: 0;
   transition: all 0.35s;
-  background: ${p => p.$done ? 'linear-gradient(135deg,#4f8ef7,#2563eb)' : p.$active ? 'linear-gradient(135deg,#4f8ef7,#7ab0ff)' : 'rgba(0,0,0,0.05)'};
-  color: ${p => (p.$done || p.$active) ? '#fff' : '#555'};
-  border: 1.5px solid ${p => p.$done ? '#2563eb' : p.$active ? '#4f8ef7' : 'rgba(0,0,0,0.1)'};
+  background: ${p => p.$done ? 'linear-gradient(135deg,${colors.primary},${colors.primaryDark})' : p.$active ? 'linear-gradient(135deg,${colors.primary},${colors.primaryLight})' : 'rgba(0,0,0,0.05)'};
+  color: ${p => (p.$done || p.$active) ? colors.white : colors.grayMid};
+  border: 1.5px solid ${p => p.$done ? colors.primaryDark : p.$active ? colors.primary : 'rgba(0,0,0,0.1)'};
   box-shadow: ${p => p.$active ? '0 0 16px rgba(79,142,247,0.5)' : 'none'};
 `;
 
@@ -140,7 +141,7 @@ const StepLine = styled.div`
   flex: 1;
   height: 2px;
   background: ${p => p.$done
-    ? 'linear-gradient(90deg,#4f8ef7,#2563eb)'
+    ? 'linear-gradient(90deg,${colors.primary},${colors.primaryDark})'
     : 'rgba(0,0,0,0.07)'};
   transition: background 0.35s;
 `;
@@ -153,7 +154,7 @@ const StepLabels = styled.div`
 
 const StepLabel = styled.span`
   font-size: 9px;
-  color: ${p => p.$active ? '#4f8ef7' : p.$done ? '#64748b' : '#333'};
+  color: ${p => p.$active ? colors.primary : p.$done ? colors.textMuted : colors.grayDark};
   font-weight: ${p => p.$active ? '700' : '400'};
   text-align: center;
   width: 60px;
@@ -178,13 +179,13 @@ const StepTitle = styled.h2`
   font-size: 24px;
   font-weight: 800;
   margin-bottom: 6px;
-  color: #0f172a;
+  color: ${colors.darkDeepest};
   letter-spacing: -0.3px;
 `;
 
 const StepSub = styled.p`
   font-size: 14px;
-  color: #64748b;
+  color: ${colors.textMuted};
   margin-bottom: 28px;
   line-height: 1.6;
 `;
@@ -218,13 +219,13 @@ const HeroText = styled.div``;
 const HeroTitle = styled.div`
   font-size: 17px;
   font-weight: 700;
-  color: #0f172a;
+  color: ${colors.darkDeepest};
   margin-bottom: 4px;
 `;
 
 const HeroSub = styled.div`
   font-size: 13px;
-  color: #64748b;
+  color: ${colors.textMuted};
   line-height: 1.5;
 `;
 
@@ -239,7 +240,7 @@ const HeroIconWrap = styled.div`
   justify-content: center;
   flex-shrink: 0;
   animation: ${floatUp} 3s ease-in-out infinite;
-  color: #4f8ef7;
+  color: ${colors.primary};
 `;
 
 /* ─── Services ───────────────────────────────────────────── */
@@ -253,7 +254,7 @@ const ServiceCard = styled.button`
   background: ${p => p.$active
     ? 'linear-gradient(135deg, rgba(79,142,247,0.1), rgba(37,99,235,0.06))'
     : 'rgba(0,0,0,0.04)'};
-  border: 1.5px solid ${p => p.$active ? '#4f8ef7' : 'rgba(0,0,0,0.07)'};
+  border: 1.5px solid ${p => p.$active ? colors.primary : 'rgba(0,0,0,0.07)'};
   border-radius: 16px;
   padding: 18px 20px;
   display: flex;
@@ -279,12 +280,12 @@ const ServiceInfo = styled.div`
 const ServiceName = styled.span`
   font-size: 15px;
   font-weight: 700;
-  color: #0f172a;
+  color: ${colors.darkDeepest};
 `;
 
 const ServiceMeta = styled.span`
   font-size: 12px;
-  color: #64748b;
+  color: ${colors.textMuted};
   display: flex;
   align-items: center;
   gap: 4px;
@@ -298,7 +299,7 @@ const ServicePrice = styled.div`
 const PriceTotal = styled.div`
   font-size: 19px;
   font-weight: 800;
-  background: linear-gradient(135deg, #4f8ef7, #93c5fd);
+  background: linear-gradient(135deg, ${colors.primary}, ${colors.primaryLighter});
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -306,7 +307,7 @@ const PriceTotal = styled.div`
 
 const PriceDeposit = styled.div`
   font-size: 11px;
-  color: #64748b;
+  color: ${colors.textMuted};
   margin-top: 3px;
 `;
 
@@ -319,7 +320,7 @@ const ServiceIconWrap = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #4f8ef7;
+  color: ${colors.primary};
   flex-shrink: 0;
   margin-right: 14px;
 `;
@@ -351,7 +352,7 @@ const BarberCard = styled.button`
   background: ${p => p.$active
     ? 'linear-gradient(160deg, rgba(79,142,247,0.12), rgba(37,99,235,0.06))'
     : 'rgba(0,0,0,0.04)'};
-  border: 1.5px solid ${p => p.$active ? '#4f8ef7' : 'rgba(0,0,0,0.08)'};
+  border: 1.5px solid ${p => p.$active ? colors.primary : 'rgba(0,0,0,0.08)'};
   border-radius: 20px;
   padding: 0;
   cursor: pointer;
@@ -389,10 +390,10 @@ const BarberPhotoFallback = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #4f8ef7, #2563eb);
+  background: linear-gradient(135deg, ${colors.primary}, ${colors.primaryDark});
   font-size: 48px;
   font-weight: 800;
-  color: #fff;
+  color: ${colors.white};
 `;
 
 const BarberSelectedBadge = styled.div`
@@ -402,7 +403,7 @@ const BarberSelectedBadge = styled.div`
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: #4f8ef7;
+  background: ${colors.primary};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -417,13 +418,13 @@ const BarberInfo = styled.div`
 const BarberName = styled.div`
   font-size: 15px;
   font-weight: 700;
-  color: #0f172a;
+  color: ${colors.darkDeepest};
   margin-bottom: 3px;
 `;
 
 const BarberSpec = styled.div`
   font-size: 12px;
-  color: #64748b;
+  color: ${colors.textMuted};
 `;
 
 /* ─── legacy avatar (for fallback in service step) ──────── */
@@ -431,8 +432,8 @@ const BarberAvatar = styled.div`
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #4f8ef7, #2563eb);
-  color: #fff;
+  background: linear-gradient(135deg, ${colors.primary}, ${colors.primaryDark});
+  color: ${colors.white};
   font-weight: 800;
   font-size: 15px;
   display: flex;
@@ -456,9 +457,9 @@ const DaysRow = styled.div`
 
 const DayBtn = styled.button`
   background: ${p => p.$active
-    ? 'linear-gradient(135deg, #4f8ef7, #2563eb)'
+    ? 'linear-gradient(135deg, ${colors.primary}, ${colors.primaryDark})'
     : 'rgba(0,0,0,0.04)'};
-  color: ${p => p.$active ? '#fff' : '#0f172a'};
+  color: ${p => p.$active ? colors.white : colors.darkDeepest};
   border: 1.5px solid ${p => p.$active ? 'transparent' : 'rgba(0,0,0,0.07)'};
   border-radius: 14px;
   padding: 12px 14px;
@@ -486,9 +487,9 @@ const HoursGrid = styled.div`
 
 const HourBtn = styled.button`
   background: ${p => p.$active
-    ? 'linear-gradient(135deg, #4f8ef7, #2563eb)'
+    ? 'linear-gradient(135deg, ${colors.primary}, ${colors.primaryDark})'
     : p.$disabled ? 'rgba(255,255,255,0.01)' : 'rgba(0,0,0,0.05)'};
-  color: ${p => p.$active ? '#fff' : p.$disabled ? '#94a3b8' : '#334155'};
+  color: ${p => p.$active ? colors.white : p.$disabled ? colors.textSubtle : colors.textSecondary};
   border: 1.5px solid ${p => p.$active ? 'transparent' : p.$disabled ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.08)'};
   border-radius: 12px;
   padding: 13px 8px;
@@ -510,35 +511,35 @@ const Label = styled.label`
   align-items: center;
   gap: 8px;
   font-size: 12px;
-  color: #64748b;
+  color: ${colors.textMuted};
   margin-bottom: 8px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  svg { color: #4f8ef7; }
+  svg { color: ${colors.primary}; }
 `;
 
 const Input = styled.input`
   width: 100%;
   padding: 14px 16px;
   background: rgba(0,0,0,0.05);
-  border: 1.5px solid ${p => p.$error ? '#e05555' : 'rgba(0,0,0,0.1)'};
+  border: 1.5px solid ${p => p.$error ? colors.errorLight : 'rgba(0,0,0,0.1)'};
   border-radius: 12px;
-  color: #0f172a;
+  color: ${colors.darkDeepest};
   font-size: 15px;
   transition: all 0.2s;
   &:focus {
     outline: none;
-    border-color: #4f8ef7;
+    border-color: ${colors.primary};
     background: rgba(79,142,247,0.04);
     box-shadow: 0 0 0 3px rgba(79,142,247,0.08);
   }
-  &::placeholder { color: #94a3b8; }
+  &::placeholder { color: ${colors.textSubtle}; }
 `;
 
 const FieldError = styled.span`
   font-size: 12px;
-  color: #e05555;
+  color: ${colors.errorLight};
   margin-top: 5px;
   display: block;
 `;
@@ -560,9 +561,9 @@ const SummaryRow = styled.div`
   justify-content: space-between;
   align-items: center;
   font-size: 14px;
-  color: ${p => p.$highlight ? '#4f8ef7' : '#0f172a'};
+  color: ${p => p.$highlight ? colors.primary : colors.darkDeepest};
   font-weight: ${p => p.$highlight ? '700' : '400'};
-  span:first-child { color: #64748b; font-size: 13px; }
+  span:first-child { color: ${colors.textMuted}; font-size: 13px; }
   ${p => p.$highlight && 'border-top: 1px solid rgba(0,0,0,0.07); padding-top: 12px;'}
 `;
 
@@ -578,7 +579,7 @@ const PaymentBox = styled.div`
 
 const PaymentTitle = styled.div`
   font-size: 11px;
-  color: #64748b;
+  color: ${colors.textMuted};
   text-transform: uppercase;
   letter-spacing: 1.5px;
   margin-bottom: 4px;
@@ -597,12 +598,12 @@ const PaymentRow = styled.div`
 `;
 
 const PaymentLabel = styled.span`
-  color: #64748b;
+  color: ${colors.textMuted};
   font-size: 13px;
 `;
 
 const PaymentValue = styled.span`
-  color: #0f172a;
+  color: ${colors.darkDeepest};
   font-weight: 600;
   display: flex;
   align-items: center;
@@ -612,7 +613,7 @@ const PaymentValue = styled.span`
 const AmountBig = styled.div`
   font-size: 42px;
   font-weight: 800;
-  background: linear-gradient(135deg, #4f8ef7, #93c5fd);
+  background: linear-gradient(135deg, ${colors.primary}, ${colors.primaryLighter});
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -624,7 +625,7 @@ const CopyBtn = styled.button`
   background: rgba(79,142,247,0.1);
   border: 1px solid rgba(79,142,247,0.25);
   border-radius: 8px;
-  color: #4f8ef7;
+  color: ${colors.primary};
   padding: 5px 10px;
   font-size: 11px;
   font-weight: 600;
@@ -650,7 +651,7 @@ const CountdownWrap = styled.div`
 const CountdownTime = styled.span`
   font-size: 26px;
   font-weight: 800;
-  color: ${p => p.$urgent ? '#e05555' : '#4f8ef7'};
+  color: ${p => p.$urgent ? colors.errorLight : colors.primary};
   font-variant-numeric: tabular-nums;
   animation: ${p => p.$urgent ? pulse : 'none'} 1s ease infinite;
   letter-spacing: 1px;
@@ -666,7 +667,7 @@ const AlertBox = styled.div`
   align-items: flex-start;
   margin-bottom: 20px;
   font-size: 13px;
-  color: #c06060;
+  color: ${colors.errorSoft};
   line-height: 1.5;
   svg { flex-shrink: 0; margin-top: 1px; }
 `;
@@ -699,7 +700,7 @@ const Spinner = styled.div`
   width: 26px;
   height: 26px;
   border: 3px solid rgba(79,142,247,0.15);
-  border-top-color: #4f8ef7;
+  border-top-color: ${colors.primary};
   border-radius: 50%;
   animation: ${spin} 0.8s linear infinite;
 `;
@@ -708,12 +709,12 @@ const StatusTitle = styled.h3`
   font-size: 24px;
   font-weight: 800;
   margin-bottom: 8px;
-  color: ${p => p.$confirmed ? '#4caf50' : '#0f172a'};
+  color: ${p => p.$confirmed ? colors.success : colors.darkDeepest};
 `;
 
 const StatusText = styled.p`
   font-size: 14px;
-  color: #64748b;
+  color: ${colors.textMuted};
   line-height: 1.7;
   max-width: 340px;
   margin-bottom: 8px;
@@ -726,7 +727,7 @@ const RefCode = styled.div`
   padding: 12px 20px;
   font-family: 'Courier New', monospace;
   font-size: 13px;
-  color: #4f8ef7;
+  color: ${colors.primary};
   letter-spacing: 1.5px;
   margin: 16px 0;
   display: flex;
@@ -740,10 +741,10 @@ const CTABtn = styled.button`
   padding: 17px;
   background: ${p => p.$ghost
     ? 'transparent'
-    : 'linear-gradient(135deg, #4f8ef7 0%, #2563eb 100%)'};
+    : 'linear-gradient(135deg, ${colors.primary} 0%, ${colors.primaryDark} 100%)'};
   border: ${p => p.$ghost ? '1.5px solid rgba(79,142,247,0.25)' : 'none'};
   border-radius: 16px;
-  color: ${p => p.$ghost ? '#4f8ef7' : '#fff'};
+  color: ${p => p.$ghost ? colors.primary : colors.white};
   font-size: 15px;
   font-weight: 700;
   cursor: pointer;
@@ -766,7 +767,7 @@ const CTABtn = styled.button`
 const StickyFooter = styled.div`
   position: sticky;
   bottom: 0;
-  background: linear-gradient(to top, #ffffff 60%, transparent);
+  background: linear-gradient(to top, ${colors.bgPage} 60%, transparent);
   padding: 20px 0 10px;
   margin-top: 12px;
   @media (min-width: 640px) { position: static; background: none; padding: 8px 0 0; }
@@ -788,8 +789,8 @@ const TrustItem = styled.div`
   align-items: center;
   gap: 6px;
   font-size: 12px;
-  color: #64748b;
-  svg { color: #4f8ef7; }
+  color: ${colors.textMuted};
+  svg { color: ${colors.primary}; }
 `;
 
 /* ─── Service icon helper ────────────────────────────────── */
@@ -889,7 +890,7 @@ function StepBarber({ preselectedId, onNext }) {
                   }
                   {selected === b.id && (
                     <BarberSelectedBadge>
-                      <FiCheck size={14} color="#fff" />
+                      <FiCheck size={14} color={colors.white} />
                     </BarberSelectedBadge>
                   )}
                 </BarberPhoto>
@@ -927,7 +928,7 @@ function StepService({ barberId, barberName, onNext, onBack }) {
   return (
     <Card>
       <StepTitle>¿Qué servicio necesitas?</StepTitle>
-      <StepSub>Servicios disponibles con <strong style={{ color: '#4f8ef7' }}>{barberName}</strong>.</StepSub>
+      <StepSub>Servicios disponibles con <strong style={{ color: colors.primary }}>{barberName}</strong>.</StepSub>
       <ServiceGrid>
         {loading
           ? [1, 2, 3].map(i => <Skeleton key={i} $h="80px" />)
@@ -999,7 +1000,7 @@ function StepSchedule({ barberId, barberName, onNext, onBack }) {
   return (
     <Card>
       <StepTitle>Elige tu horario</StepTitle>
-      <StepSub>Selecciona el día y hora con <strong style={{ color: '#4f8ef7' }}>{barberName}</strong>.</StepSub>
+      <StepSub>Selecciona el día y hora con <strong style={{ color: colors.primary }}>{barberName}</strong>.</StepSub>
 
       <Label><FiCalendar /> Fecha</Label>
       <DaysRow>
@@ -1021,8 +1022,8 @@ function StepSchedule({ barberId, barberName, onNext, onBack }) {
         ? <Skeleton $h="120px" />
         : dayClosed
           ? (
-            <div style={{ padding: '20px', textAlign: 'center', color: '#64748b', background: '#eef2ff', borderRadius: 12, fontSize: 14 }}>
-              <FiAlertCircle size={20} style={{ display: 'block', margin: '0 auto 8px', color: '#4f8ef7' }} />
+            <div style={{ padding: '20px', textAlign: 'center', color: colors.textMuted, background: colors.bgSubtle, borderRadius: 12, fontSize: 14 }}>
+              <FiAlertCircle size={20} style={{ display: 'block', margin: '0 auto 8px', color: colors.primary }} />
               El local está cerrado este día.
             </div>
           )
@@ -1193,7 +1194,7 @@ function StepPayment({ service, schedule, customer, onBookingCreated, onBack }) 
     return (
       <Card>
         <ConfirmWrap>
-          <StatusIcon><FiAlertCircle size={28} color="#e05555" /></StatusIcon>
+          <StatusIcon><FiAlertCircle size={28} color={colors.errorLight} /></StatusIcon>
           <StatusTitle>Horario no disponible</StatusTitle>
           <StatusText>{error}</StatusText>
           <CTABtn onClick={onBack} style={{ maxWidth: 320 }}>Elegir otro horario</CTABtn>
@@ -1220,9 +1221,9 @@ function StepPayment({ service, schedule, customer, onBookingCreated, onBack }) 
         )
         : (
           <CountdownWrap>
-            <FiClock size={20} color={urgent ? '#e05555' : '#4f8ef7'} />
+            <FiClock size={20} color={urgent ? colors.errorLight : colors.primary} />
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 12, color: '#64748b', marginBottom: 2 }}>Tiempo para pagar</div>
+              <div style={{ fontSize: 12, color: colors.textMuted, marginBottom: 2 }}>Tiempo para pagar</div>
               <CountdownTime $urgent={urgent}>{display}</CountdownTime>
             </div>
           </CountdownWrap>
@@ -1238,7 +1239,7 @@ function StepPayment({ service, schedule, customer, onBookingCreated, onBack }) 
         <PaymentTitle>Instrucciones de pago</PaymentTitle>
 
         <AmountBig>{fmt(inst?.amount)}</AmountBig>
-        <div style={{ fontSize: 13, color: '#64748b', marginBottom: 20 }}>COP — anticipo mínimo</div>
+        <div style={{ fontSize: 13, color: colors.textMuted, marginBottom: 20 }}>COP — anticipo mínimo</div>
 
         <PaymentRow>
           <PaymentLabel>Llave {inst?.bank}</PaymentLabel>
@@ -1266,8 +1267,8 @@ function StepPayment({ service, schedule, customer, onBookingCreated, onBack }) 
         </PaymentRow>
       </PaymentBox>
 
-      <div style={{ fontSize: 13, color: '#64748b', lineHeight: 1.6, marginBottom: 24 }}>
-        Desde tu banco envía a través de Bre-B exactamente <strong style={{ color: '#4f8ef7' }}>{fmt(inst?.amount)}</strong> a la llave <strong style={{ color: '#0f172a' }}>{inst?.llave}</strong> e incluye la referencia <strong style={{ color: '#0f172a' }}>{inst?.reference}</strong> en el mensaje.
+      <div style={{ fontSize: 13, color: colors.textMuted, lineHeight: 1.6, marginBottom: 24 }}>
+        Desde tu banco envía a través de Bre-B exactamente <strong style={{ color: colors.primary }}>{fmt(inst?.amount)}</strong> a la llave <strong style={{ color: colors.darkDeepest }}>{inst?.llave}</strong> e incluye la referencia <strong style={{ color: colors.darkDeepest }}>{inst?.reference}</strong> en el mensaje.
       </div>
 
       <CTABtn onClick={() => onBookingCreated(booking.reference)} disabled={expired}>
@@ -1313,9 +1314,9 @@ function StepStatus({ reference }) {
           {loading
             ? <Spinner />
             : isConfirmed
-              ? <FiCheck size={28} color="#4caf50" />
+              ? <FiCheck size={28} color={colors.success} />
               : isExpired || isCancelled
-                ? <FiAlertCircle size={28} color="#e05555" />
+                ? <FiAlertCircle size={28} color={colors.errorLight} />
                 : <Spinner />
           }
         </StatusIcon>
@@ -1354,7 +1355,7 @@ function StepStatus({ reference }) {
             <div style={{ marginTop: 8, textAlign: 'center' }}>
               <a
                 href={`/booking/status/${reference}`}
-                style={{ fontSize: 12, color: '#64748b', textDecoration: 'underline' }}
+                style={{ fontSize: 12, color: colors.textMuted, textDecoration: 'underline' }}
               >
                 Ver página de estado
               </a>
@@ -1409,7 +1410,7 @@ function StepStatus({ reference }) {
             )}
 
             {!isConfirmed && !isExpired && !isCancelled && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#64748b', fontSize: 13, marginTop: 8 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: colors.textMuted, fontSize: 13, marginTop: 8 }}>
                 <Spinner style={{ width: 14, height: 14, borderWidth: 2 }} />
                 Actualizando cada 5 segundos...
               </div>

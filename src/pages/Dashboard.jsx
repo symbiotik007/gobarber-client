@@ -1,5 +1,6 @@
 ﻿import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { colors } from '../styles/colors';
 import styled, { keyframes } from 'styled-components';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -15,15 +16,15 @@ const shimmer = keyframes`
 
 const Page = styled.div`
   min-height: 100vh;
-  background: #ffffff;
-  color: #0f172a;
+  background: ${colors.bgPage};
+  color: ${colors.darkDeepest};
   font-family: 'Segoe UI', sans-serif;
 `;
 
 const TopBar = styled.header`
   width: 100%;
-  background: #ffffff;
-  border-bottom: 1px solid #e2e8f0;
+  background: ${colors.bgPage};
+  border-bottom: 1px solid ${colors.border};
   padding: 0 24px;
   height: 60px;
   display: flex;
@@ -34,7 +35,7 @@ const TopBar = styled.header`
 const Logo = styled.span`
   font-size: 18px;
   font-weight: 700;
-  color: #4f8ef7;
+  color: ${colors.primary};
   letter-spacing: 1px;
 `;
 
@@ -42,19 +43,19 @@ const UserRow = styled.div`
   display: flex;
   align-items: center;
   gap: 16px;
-  span { font-size: 13px; color: #64748b; }
+  span { font-size: 13px; color: ${colors.textMuted}; }
 `;
 
 const SignOutBtn = styled.button`
   background: none;
-  border: 1px solid #e2e8f0;
-  color: #64748b;
+  border: 1px solid ${colors.border};
+  color: ${colors.textMuted};
   padding: 6px 14px;
   border-radius: 8px;
   font-size: 13px;
   cursor: pointer;
   transition: all 0.2s;
-  &:hover { border-color: #4f8ef7; color: #4f8ef7; }
+  &:hover { border-color: ${colors.primary}; color: ${colors.primary}; }
 `;
 
 const Container = styled.div`
@@ -67,10 +68,10 @@ const Container = styled.div`
 const NewBookingBtn = styled.button`
   width: 100%;
   padding: 16px;
-  background: linear-gradient(135deg, #4f8ef7, #2563eb);
+  background: linear-gradient(135deg, ${colors.primary}, ${colors.primaryDark});
   border: none;
   border-radius: 14px;
-  color: #ffffff;
+  color: ${colors.bgPage};
   font-size: 16px;
   font-weight: 700;
   cursor: pointer;
@@ -97,12 +98,12 @@ const SectionHeader = styled.div`
 const SectionTitle = styled.h2`
   font-size: 16px;
   font-weight: 600;
-  color: #0f172a;
+  color: ${colors.darkDeepest};
 `;
 
 const Badge = styled.span`
-  background: ${p => p.$color || '#e2e8f0'};
-  color: ${p => p.$text || '#64748b'};
+  background: ${p => p.$color || colors.border};
+  color: ${p => p.$text || colors.textMuted};
   font-size: 11px;
   font-weight: 700;
   padding: 3px 8px;
@@ -118,7 +119,7 @@ const Dot = styled.div`
 `;
 
 const BookingCard = styled.div`
-  background: #ffffff;
+  background: ${colors.bgPage};
   border-radius: 14px;
   padding: 18px 20px;
   margin-bottom: 10px;
@@ -150,7 +151,7 @@ const BookingInfo = styled.div`
 const BookingService = styled.div`
   font-size: 15px;
   font-weight: 600;
-  color: #0f172a;
+  color: ${colors.darkDeepest};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -158,7 +159,7 @@ const BookingService = styled.div`
 
 const BookingMeta = styled.div`
   font-size: 13px;
-  color: #64748b;
+  color: ${colors.textMuted};
   margin-top: 3px;
   display: flex;
   flex-wrap: wrap;
@@ -185,14 +186,14 @@ const StatusChip = styled.span`
 const Empty = styled.div`
   text-align: center;
   padding: 28px;
-  color: #2a3660;
+  color: ${colors.navy};
   font-size: 14px;
-  background: #f5f8ff;
+  background: ${colors.bgLighter};
   border-radius: 14px;
 `;
 
 const SkeletonCard = styled.div`
-  background: linear-gradient(90deg, #f0f4ff 25%, #e2eaff 50%, #f0f4ff 75%);
+  background: linear-gradient(90deg, ${colors.bgSkeleton} 25%, ${colors.bgAccent} 50%, ${colors.bgSkeleton} 75%);
   background-size: 800px 100%;
   animation: ${shimmer} 1.4s ease infinite;
   border-radius: 14px;
@@ -202,12 +203,12 @@ const SkeletonCard = styled.div`
 
 /* ─── Helpers ─────────────────────────────────────────────── */
 const STATUS_META = {
-  PENDING_PAYMENT: { label: 'Pendiente de pago', bg: 'rgba(79,142,247,0.12)', color: '#4f8ef7', dot: '#4f8ef7', icon: FiClock, iconBg: 'rgba(79,142,247,0.12)' },
-  CONFIRMED:       { label: 'Confirmada',        bg: 'rgba(76,175,80,0.12)',  color: '#4caf50', dot: '#4caf50', icon: FiCheck, iconBg: 'rgba(76,175,80,0.12)' },
-  COMPLETED:       { label: 'Completada',        bg: 'rgba(99,102,241,0.12)', color: '#818cf8', dot: '#818cf8', icon: FiCheck, iconBg: 'rgba(99,102,241,0.12)' },
-  CANCELLED:       { label: 'Cancelada',         bg: 'rgba(224,85,85,0.12)', color: '#e05555', dot: '#e05555', icon: FiX,    iconBg: 'rgba(224,85,85,0.12)' },
-  EXPIRED:         { label: 'Expirada',          bg: '#e2e8f0',              color: '#64748b', dot: '#64748b', icon: FiAlertCircle, iconBg: '#e2e8f0' },
-  NO_SHOW:         { label: 'No asistió',        bg: 'rgba(224,85,85,0.12)', color: '#e05555', dot: '#e05555', icon: FiX,    iconBg: 'rgba(224,85,85,0.12)' },
+  PENDING_PAYMENT: { label: 'Pendiente de pago', bg: 'rgba(79,142,247,0.12)', color: colors.primary, dot: colors.primary, icon: FiClock, iconBg: 'rgba(79,142,247,0.12)' },
+  CONFIRMED:       { label: 'Confirmada',        bg: 'rgba(76,175,80,0.12)',  color: colors.success, dot: colors.success, icon: FiCheck, iconBg: 'rgba(76,175,80,0.12)' },
+  COMPLETED:       { label: 'Completada',        bg: 'rgba(99,102,241,0.12)', color: colors.secondary, dot: colors.secondary, icon: FiCheck, iconBg: 'rgba(99,102,241,0.12)' },
+  CANCELLED:       { label: 'Cancelada',         bg: 'rgba(224,85,85,0.12)', color: colors.errorLight, dot: colors.errorLight, icon: FiX,    iconBg: 'rgba(224,85,85,0.12)' },
+  EXPIRED:         { label: 'Expirada',          bg: colors.border,              color: colors.textMuted, dot: colors.textMuted, icon: FiAlertCircle, iconBg: colors.border },
+  NO_SHOW:         { label: 'No asistió',        bg: 'rgba(224,85,85,0.12)', color: colors.errorLight, dot: colors.errorLight, icon: FiX,    iconBg: 'rgba(224,85,85,0.12)' },
 };
 
 function fmt(n) {
@@ -238,9 +239,9 @@ function BookingItem({ booking, clickable = true }) {
       </BookingInfo>
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6, flexShrink: 0 }}>
         <StatusChip $bg={meta.bg} $color={meta.color}>{meta.label}</StatusChip>
-        <span style={{ fontSize: 13, color: '#64748b' }}>{fmt(booking.deposit_amount)}</span>
+        <span style={{ fontSize: 13, color: colors.textMuted }}>{fmt(booking.deposit_amount)}</span>
       </div>
-      {clickable && <FiChevronRight size={16} color="#cbd5e1" style={{ flexShrink: 0 }} />}
+      {clickable && <FiChevronRight size={16} color={colors.textDisabled} style={{ flexShrink: 0 }} />}
     </BookingCard>
   );
 }
@@ -280,9 +281,9 @@ export default function Dashboard() {
         {/* Pendientes de pago */}
         <Section>
           <SectionHeader>
-            <Dot $color="#4f8ef7" />
+            <Dot $color={colors.primary} />
             <SectionTitle>Reservas pendientes</SectionTitle>
-            {pending.length > 0 && <Badge $color="rgba(79,142,247,0.15)" $text="#4f8ef7">{pending.length}</Badge>}
+            {pending.length > 0 && <Badge $color="rgba(79,142,247,0.15)" $text={colors.primary}>{pending.length}</Badge>}
           </SectionHeader>
           {loading
             ? <><SkeletonCard /><SkeletonCard /></>
@@ -295,9 +296,9 @@ export default function Dashboard() {
         {/* Confirmadas */}
         <Section>
           <SectionHeader>
-            <Dot $color="#4caf50" />
+            <Dot $color={colors.success} />
             <SectionTitle>Reservas confirmadas</SectionTitle>
-            {confirmed.length > 0 && <Badge $color="rgba(76,175,80,0.15)" $text="#4caf50">{confirmed.length}</Badge>}
+            {confirmed.length > 0 && <Badge $color="rgba(76,175,80,0.15)" $text={colors.success}>{confirmed.length}</Badge>}
           </SectionHeader>
           {loading
             ? <><SkeletonCard /><SkeletonCard /></>
@@ -310,7 +311,7 @@ export default function Dashboard() {
         {/* Anteriores */}
         <Section>
           <SectionHeader>
-            <Dot $color="#2a3660" />
+            <Dot $color={colors.navy} />
             <SectionTitle>Reservas anteriores</SectionTitle>
             {past.length > 0 && <Badge>{past.length}</Badge>}
           </SectionHeader>

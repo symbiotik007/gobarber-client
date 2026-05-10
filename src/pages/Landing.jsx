@@ -1,5 +1,6 @@
 ﻿import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { colors } from '../styles/colors';
 import styled, { keyframes, createGlobalStyle } from 'styled-components';
 import {
   FiMapPin, FiPhone, FiMessageCircle, FiClock, FiStar,
@@ -15,7 +16,7 @@ const SHOP = {
   tagline: 'Experiencias de alta calidad en cuidado masculino',
   description:
     'Somos una empresa comprometida a brindar experiencias de alta calidad en cuidado masculino, enfocados en asesoría de imagen, barbería y tratamientos capilares. Un lugar donde puedes confiar tu imagen y la estilo en manos de profesionales dispuestos a brindarte la mejor experiencia.',
-  address: 'Cl 18 #49-75, Pasto, Nariño, Colombia',
+  address: 'Calle 18 #30-70 Parque Infantil, Pasto, Nariño, Colombia',
   phone: '+573017381452',
   whatsapp: '+573017381452',
   instagram: '@troyabarberstudio',
@@ -63,7 +64,7 @@ const REVIEWS = [
 ];
 
 const GlobalStyle = createGlobalStyle`
-  body { background: #ffffff; margin: 0; }
+  body { background: ${colors.bgPage}; margin: 0; }
 `;
 
 /* ─── Animations ─────────────────────────────────────────── */
@@ -109,7 +110,7 @@ const Nav = styled.nav`
 const NavLogo = styled.span`
   font-size: 17px;
   font-weight: 800;
-  color: ${p => p.$scrolled ? '#4f8ef7' : '#ffffff'};
+  color: ${p => p.$scrolled ? colors.primary : colors.bgPage};
   letter-spacing: 3px;
   text-transform: uppercase;
   text-shadow: ${p => p.$scrolled ? 'none' : '0 2px 12px rgba(0,0,0,0.4)'};
@@ -133,9 +134,9 @@ const NavBtn = styled.button`
   align-items: center;
   gap: 6px;
   padding: 8px 16px;
-  background: ${p => p.$primary ? '#4f8ef7' : 'rgba(255,255,255,0.12)'};
-  color: #ffffff;
-  border: 1.5px solid ${p => p.$primary ? '#4f8ef7' : 'rgba(255,255,255,0.5)'};
+  background: ${p => p.$primary ? colors.primary : 'rgba(255,255,255,0.12)'};
+  color: ${colors.bgPage};
+  border: 1.5px solid ${p => p.$primary ? colors.primary : 'rgba(255,255,255,0.5)'};
   border-radius: 8px;
   font-size: 13px;
   font-weight: 600;
@@ -146,20 +147,20 @@ const NavBtn = styled.button`
   letter-spacing: 0.2px;
 
   &:hover {
-    background: ${p => p.$primary ? '#2563eb' : 'rgba(255,255,255,0.25)'};
-    border-color: ${p => p.$primary ? '#2563eb' : '#ffffff'};
+    background: ${p => p.$primary ? colors.primaryDark : 'rgba(255,255,255,0.25)'};
+    border-color: ${p => p.$primary ? colors.primaryDark : colors.bgPage};
     transform: translateY(-1px);
   }
 
   ${p => p.$scrolled && `
-    background: ${p.$primary ? '#4f8ef7' : 'transparent'};
-    color: ${p.$primary ? '#ffffff' : '#1e293b'};
-    border-color: ${p.$primary ? '#4f8ef7' : 'rgba(15,23,42,0.2)'};
+    background: ${p.$primary ? colors.primary : 'transparent'};
+    color: ${p.$primary ? colors.bgPage : colors.textPrimary};
+    border-color: ${p.$primary ? colors.primary : 'rgba(15,23,42,0.2)'};
     backdrop-filter: none;
     &:hover {
-      background: ${p.$primary ? '#2563eb' : 'rgba(79,142,247,0.08)'};
-      color: ${p.$primary ? '#ffffff' : '#4f8ef7'};
-      border-color: #4f8ef7;
+      background: ${p.$primary ? colors.primaryDark : 'rgba(79,142,247,0.08)'};
+      color: ${p.$primary ? colors.bgPage : colors.primary};
+      border-color: ${colors.primary};
     }
   `}
 
@@ -234,7 +235,7 @@ const HeroBadge = styled.span`
   border: 1px solid rgba(79,142,247,0.4);
   border-radius: 20px;
   font-size: 12px;
-  color: #4f8ef7;
+  color: ${colors.primary};
   letter-spacing: 2px;
   text-transform: uppercase;
   margin-bottom: 16px;
@@ -243,7 +244,7 @@ const HeroBadge = styled.span`
 const HeroTitle = styled.h1`
   font-size: clamp(36px, 6vw, 72px);
   font-weight: 700;
-  color: #ffffff;
+  color: ${colors.bgPage};
   line-height: 1.1;
   margin-bottom: 16px;
   letter-spacing: -1px;
@@ -278,8 +279,8 @@ const HeroRating = styled.div`
 
 const HeroCTA = styled.button`
   padding: 16px 36px;
-  background: linear-gradient(135deg, #4f8ef7, #93c5fd);
-  color: #ffffff;
+  background: linear-gradient(135deg, ${colors.primary}, ${colors.primaryLighter});
+  color: ${colors.bgPage};
   border: none;
   border-radius: 50px;
   font-size: 16px;
@@ -307,7 +308,7 @@ const HeroCTA = styled.button`
 
 /* ─── Info Strip ─────────────────────────────────────────── */
 const InfoStrip = styled.div`
-  background: #ffffff;
+  background: ${colors.bgPage};
   border-bottom: 1px solid rgba(79,142,247,0.1);
   padding: 16px 60px;
   display: flex;
@@ -333,14 +334,14 @@ const InfoItem = styled.a`
   white-space: nowrap;
   flex-shrink: 0;
 
-  svg { color: #4f8ef7; flex-shrink: 0; }
+  svg { color: ${colors.primary}; flex-shrink: 0; }
 
-  &:hover { color: #4f8ef7; }
+  &:hover { color: ${colors.primary}; }
 `;
 
 /* ─── Main Layout ────────────────────────────────────────── */
 const Main = styled.main`
-  background: #f0f5ff;
+  background: ${colors.bgMuted};
   padding: 80px 60px;
   display: grid;
   grid-template-columns: 1fr 420px;
@@ -362,14 +363,14 @@ const SectionLabel = styled.p`
   font-size: 11px;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: #4f8ef7;
+  color: ${colors.primary};
   margin-bottom: 8px;
 `;
 
 const SectionTitle = styled.h2`
   font-size: 32px;
   font-weight: 700;
-  color: #1e293b;
+  color: ${colors.textPrimary};
   margin-bottom: 20px;
   line-height: 1.2;
 `;
@@ -402,19 +403,19 @@ const MapAddress = styled.div`
   align-items: flex-start;
   gap: 10px;
   padding: 14px 16px;
-  background: #ffffff;
+  background: ${colors.bgPage};
   border-radius: 10px;
   font-size: 14px;
   color: rgba(15,23,42,0.8);
   border: 1px solid rgba(79,142,247,0.1);
   margin-bottom: 32px;
 
-  svg { color: #4f8ef7; margin-top: 2px; flex-shrink: 0; }
+  svg { color: ${colors.primary}; margin-top: 2px; flex-shrink: 0; }
 `;
 
 /* ─── Hours ──────────────────────────────────────────────── */
 const HoursCard = styled.div`
-  background: #ffffff;
+  background: ${colors.bgPage};
   border-radius: 16px;
   padding: 24px;
   border: 1px solid rgba(79,142,247,0.1);
@@ -427,9 +428,9 @@ const HoursTitle = styled.h3`
   align-items: center;
   gap: 8px;
   font-size: 15px;
-  color: #1e293b;
+  color: ${colors.textPrimary};
   margin-bottom: 16px;
-  svg { color: #4f8ef7; }
+  svg { color: ${colors.primary}; }
 `;
 
 const HoursRow = styled.div`
@@ -442,7 +443,7 @@ const HoursRow = styled.div`
   &:last-child { border-bottom: none; }
 
   .day { color: rgba(15,23,42,0.55); }
-  .time { color: ${p => p.$closed ? 'rgba(15,23,42,0.25)' : '#1e293b'}; font-weight: 500; }
+  .time { color: ${p => p.$closed ? 'rgba(15,23,42,0.25)' : colors.textPrimary}; font-weight: 500; }
 `;
 
 /* ─── Professionals ──────────────────────────────────────── */
@@ -456,7 +457,7 @@ const BarbersGrid = styled.div`
 `;
 
 const BarberCard = styled.div`
-  background: #ffffff;
+  background: ${colors.bgPage};
   border-radius: 16px;
   overflow: hidden;
   border: 1px solid rgba(79,142,247,0.08);
@@ -493,13 +494,13 @@ const BarberInfo = styled.div`
 const BarberName = styled.h3`
   font-size: 16px;
   font-weight: 700;
-  color: #1e293b;
+  color: ${colors.textPrimary};
   margin-bottom: 2px;
 `;
 
 const BarberRole = styled.p`
   font-size: 12px;
-  color: #4f8ef7;
+  color: ${colors.primary};
   margin-bottom: 6px;
 `;
 
@@ -515,7 +516,7 @@ const BookBtn = styled.button`
   background: rgba(79,142,247,0.1);
   border: 1px solid rgba(79,142,247,0.3);
   border-radius: 8px;
-  color: #4f8ef7;
+  color: ${colors.primary};
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
@@ -526,15 +527,15 @@ const BookBtn = styled.button`
   gap: 6px;
 
   &:hover {
-    background: #4f8ef7;
-    color: #ffffff;
-    border-color: #4f8ef7;
+    background: ${colors.primary};
+    color: ${colors.bgPage};
+    border-color: ${colors.primary};
   }
 `;
 
 /* ─── Reviews ────────────────────────────────────────────── */
 const ReviewsSection = styled.section`
-  background: #f0f5ff;
+  background: ${colors.bgMuted};
   padding: 80px 60px;
   border-top: 1px solid rgba(79,142,247,0.08);
 
@@ -560,7 +561,7 @@ const RatingBig = styled.div`
 const RatingNumber = styled.span`
   font-size: 72px;
   font-weight: 700;
-  color: #4f8ef7;
+  color: ${colors.primary};
   line-height: 1;
 `;
 
@@ -574,7 +575,7 @@ const SeeAllBtn = styled.button`
   background: transparent;
   border: 1px solid rgba(79,142,247,0.4);
   border-radius: 8px;
-  color: #4f8ef7;
+  color: ${colors.primary};
   font-size: 14px;
   cursor: pointer;
   transition: all 0.2s;
@@ -594,7 +595,7 @@ const ReviewsGrid = styled.div`
 `;
 
 const ReviewCard = styled.div`
-  background: #ffffff;
+  background: ${colors.bgPage};
   border-radius: 16px;
   padding: 24px;
   border: 1px solid rgba(79,142,247,0.1);
@@ -614,20 +615,20 @@ const ReviewerAvatar = styled.div`
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #4f8ef7, #2563eb);
+  background: linear-gradient(135deg, ${colors.primary}, ${colors.primaryDark});
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 13px;
   font-weight: 700;
-  color: #ffffff;
+  color: ${colors.bgPage};
   flex-shrink: 0;
 `;
 
 const ReviewerName = styled.p`
   font-size: 15px;
   font-weight: 600;
-  color: #1e293b;
+  color: ${colors.textPrimary};
 `;
 
 const ReviewDate = styled.p`
@@ -649,7 +650,7 @@ const ReviewText = styled.p`
 
 /* ─── Footer ─────────────────────────────────────────────── */
 const Footer = styled.footer`
-  background: #ffffff;
+  background: ${colors.bgPage};
   padding: 40px 60px;
   display: flex;
   justify-content: space-between;
@@ -664,7 +665,7 @@ const Footer = styled.footer`
 const FooterLogo = styled.p`
   font-size: 16px;
   font-weight: 700;
-  color: #4f8ef7;
+  color: ${colors.primary};
   letter-spacing: 2px;
 `;
 
@@ -678,9 +679,9 @@ function Stars({ rating, size = 16 }) {
   return (
     <span style={{ display: 'flex', gap: 3 }}>
       {[1, 2, 3, 4, 5].map(n => {
-        if (rating >= n) return <FaStar key={n} size={size} color="#4f8ef7" />;
-        if (rating >= n - 0.5) return <FaStarHalfAlt key={n} size={size} color="#4f8ef7" />;
-        return <FaRegStar key={n} size={size} color="#4f8ef7" />;
+        if (rating >= n) return <FaStar key={n} size={size} color={colors.primary} />;
+        if (rating >= n - 0.5) return <FaStarHalfAlt key={n} size={size} color={colors.primary} />;
+        return <FaRegStar key={n} size={size} color={colors.primary} />;
       })}
     </span>
   );
@@ -750,7 +751,7 @@ export default function Landing() {
             <div className="stars">
               <Stars rating={SHOP.rating} size={18} />
             </div>
-            <strong style={{ color: '#ffffff', fontSize: 18 }}>{SHOP.rating}</strong>
+            <strong style={{ color: colors.bgPage, fontSize: 18 }}>{SHOP.rating}</strong>
             <button
               className="count"
               style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.75)', fontSize: 14, textDecoration: 'underline' }}
@@ -867,7 +868,7 @@ export default function Landing() {
           <HoursCard>
             <HoursTitle><FiStar size={16} /> Reseñas destacadas</HoursTitle>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20, paddingBottom: 16, borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
-              <span style={{ fontSize: 48, fontWeight: 700, color: '#4f8ef7', lineHeight: 1 }}>{SHOP.rating}</span>
+              <span style={{ fontSize: 48, fontWeight: 700, color: colors.primary, lineHeight: 1 }}>{SHOP.rating}</span>
               <div>
                 <Stars rating={SHOP.rating} size={16} />
                 <p style={{ fontSize: 12, color: 'rgba(15,23,42,0.35)', marginTop: 4 }}>{SHOP.reviewCount} reseñas</p>
@@ -876,7 +877,7 @@ export default function Landing() {
             {REVIEWS.slice(0, 3).map(r => (
               <div key={r.id} style={{ paddingBottom: 14, marginBottom: 14, borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                  <span style={{ fontSize: 13, fontWeight: 600, color: '#1e293b' }}>{r.name}</span>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: colors.textPrimary }}>{r.name}</span>
                   <Stars rating={r.rating} size={11} />
                 </div>
                 <p style={{ fontSize: 13, color: 'rgba(15,23,42,0.5)', lineHeight: 1.6 }}>
@@ -930,7 +931,7 @@ export default function Landing() {
       {/* FOOTER */}
       <Footer>
         <FooterLogo>TROYA BARBER STUDIO</FooterLogo>
-        <FooterText>Cl 18 #49-75, Pasto, Nariño, Colombia</FooterText>
+        <FooterText>Calle 18 #30-70 Parque Infantil, Pasto, Nariño, Colombia</FooterText>
         <FooterText>© 2025 Troya Barber Studio. Todos los derechos reservados.</FooterText>
       </Footer>
     </>

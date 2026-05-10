@@ -28,9 +28,22 @@ export const colors = {
   textDisabled:  '#cbd5e1',
   textOnPrimary: '#ffffff',
 
+  // Bordes / separadores
+  border:    '#e2e8f0',
+
+  // Neutros adicionales
+  white:     '#ffffff',
+  grayLight: '#9e9e9e',
+  grayMid:   '#555',
+  grayDark:  '#333',
+  navy:      '#2a3660',
+  bgLighter: '#f5f8ff',
+  bgSkeleton:'#f0f4ff',
+
   // Estados
   success:       '#4caf50',
   error:         '#c53030',
   errorLight:    '#e05555',
+  errorSoft:     '#c06060',
   errorMaterial: '#f44336',
 };
