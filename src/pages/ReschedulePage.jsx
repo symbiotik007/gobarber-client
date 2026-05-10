@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+﻿import { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { format, parseISO, addDays, startOfDay } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -13,7 +13,7 @@ import track, { EVENTS } from '../services/analytics';
 /* ─── Global ─────────────────────────────────────────────────────── */
 const Global = createGlobalStyle`
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: #1a1720; color: #f4ede8; font-family: 'Segoe UI', sans-serif; }
+  body { background: #ffffff; color: #1e293b; font-family: 'Segoe UI', sans-serif; }
 `;
 
 const fadeIn = keyframes`from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}`;
@@ -22,7 +22,7 @@ const spin = keyframes`from{transform:rotate(0deg)}to{transform:rotate(360deg)}`
 /* ─── Layout ──────────────────────────────────────────────────────── */
 const Page = styled.div`
   min-height: 100vh;
-  background: #1a1720;
+  background: #ffffff;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -41,18 +41,18 @@ const TopBar = styled.div`
 const Logo = styled.span`
   font-size: 18px;
   font-weight: 700;
-  color: #ff9000;
+  color: #4f8ef7;
   letter-spacing: 1px;
 `;
 
 const HomeLink = styled(Link)`
   font-size: 13px;
-  color: #666360;
+  color: #64748b;
   text-decoration: none;
   display: flex;
   align-items: center;
   gap: 4px;
-  &:hover { color: #ff9000; }
+  &:hover { color: #4f8ef7; }
 `;
 
 const Card = styled.div`
@@ -65,20 +65,20 @@ const Card = styled.div`
 const PageTitle = styled.h1`
   font-size: 22px;
   font-weight: 700;
-  color: #f4ede8;
+  color: #1e293b;
   margin-bottom: 6px;
 `;
 
 const PageSub = styled.p`
   font-size: 14px;
-  color: #666360;
+  color: #64748b;
   margin-bottom: 24px;
   line-height: 1.5;
 `;
 
 /* ─── Current booking summary ─────────────────────────────────────── */
 const SummaryBox = styled.div`
-  background: #232129;
+  background: #f8faff;
   border-radius: 14px;
   padding: 18px 20px;
   margin-bottom: 28px;
@@ -93,15 +93,15 @@ const SummaryRow = styled.div`
   gap: 10px;
 `;
 
-const SummaryIcon = styled.div`color: #ff9000; flex-shrink: 0; margin-top: 2px;`;
-const SummaryLabel = styled.div`font-size: 11px; color: #666360; text-transform: uppercase; letter-spacing: .8px; margin-bottom: 1px;`;
-const SummaryValue = styled.div`font-size: 14px; color: #f4ede8; font-weight: 500;`;
+const SummaryIcon = styled.div`color: #4f8ef7; flex-shrink: 0; margin-top: 2px;`;
+const SummaryLabel = styled.div`font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: .8px; margin-bottom: 1px;`;
+const SummaryValue = styled.div`font-size: 14px; color: #1e293b; font-weight: 500;`;
 
 /* ─── Section label ────────────────────────────────────────────────── */
 const Label = styled.div`
   font-size: 13px;
   font-weight: 600;
-  color: #999591;
+  color: #94a3b8;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -126,9 +126,9 @@ const DayBtn = styled.button`
   gap: 2px;
   padding: 10px 14px;
   border-radius: 12px;
-  border: 2px solid ${p => p.$active ? '#ff9000' : '#2d2b35'};
-  background: ${p => p.$active ? 'rgba(255,144,0,0.12)' : '#232129'};
-  color: ${p => p.$active ? '#ff9000' : '#f4ede8'};
+  border: 2px solid ${p => p.$active ? '#4f8ef7' : '#e2e8f0'};
+  background: ${p => p.$active ? 'rgba(79,142,247,0.12)' : '#f8faff'};
+  color: ${p => p.$active ? '#4f8ef7' : '#1e293b'};
   cursor: pointer;
   font-size: 11px;
   transition: all 0.2s;
@@ -147,23 +147,23 @@ const HoursGrid = styled.div`
 const HourBtn = styled.button`
   padding: 12px 0;
   border-radius: 10px;
-  border: 2px solid ${p => p.$active ? '#ff9000' : p.$disabled ? '#1e1c25' : '#2d2b35'};
-  background: ${p => p.$active ? 'rgba(255,144,0,0.12)' : p.$disabled ? '#1a1720' : '#232129'};
-  color: ${p => p.$active ? '#ff9000' : p.$disabled ? '#3e3b47' : '#f4ede8'};
+  border: 2px solid ${p => p.$active ? '#4f8ef7' : p.$disabled ? '#f8faff' : '#e2e8f0'};
+  background: ${p => p.$active ? 'rgba(79,142,247,0.12)' : p.$disabled ? '#ffffff' : '#f8faff'};
+  color: ${p => p.$active ? '#4f8ef7' : p.$disabled ? '#cbd5e1' : '#1e293b'};
   font-size: 14px;
   font-weight: 600;
   cursor: ${p => p.$disabled ? 'not-allowed' : 'pointer'};
   transition: all 0.2s;
   text-decoration: ${p => p.$disabled ? 'line-through' : 'none'};
   &:hover:not(:disabled) {
-    border-color: ${p => p.$active ? '#ff9000' : '#ff9000'};
+    border-color: ${p => p.$active ? '#4f8ef7' : '#4f8ef7'};
   }
 `;
 
 /* ─── Confirm step ─────────────────────────────────────────────────── */
 const ConfirmBox = styled.div`
-  background: #232129;
-  border: 1px solid rgba(255,144,0,0.2);
+  background: #f8faff;
+  border: 1px solid rgba(79,142,247,0.2);
   border-radius: 14px;
   padding: 20px;
   margin-bottom: 20px;
@@ -172,7 +172,7 @@ const ConfirmBox = styled.div`
 const ConfirmTitle = styled.div`
   font-size: 14px;
   font-weight: 700;
-  color: #f4ede8;
+  color: #1e293b;
   margin-bottom: 14px;
 `;
 
@@ -180,7 +180,7 @@ const ConfirmRow = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 8px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
   font-size: 13px;
   &:last-child { border-bottom: none; }
 `;
@@ -203,8 +203,8 @@ const Warning = styled.div`
 const PrimaryBtn = styled.button`
   width: 100%;
   padding: 15px;
-  background: #ff9000;
-  color: #1a1720;
+  background: #4f8ef7;
+  color: #ffffff;
   font-size: 15px;
   font-weight: 700;
   border: none;
@@ -215,7 +215,7 @@ const PrimaryBtn = styled.button`
   justify-content: center;
   gap: 8px;
   transition: background 0.2s;
-  &:hover:not(:disabled) { background: #e08000; }
+  &:hover:not(:disabled) { background: #2563eb; }
   &:disabled { opacity: 0.4; cursor: not-allowed; }
 `;
 
@@ -223,14 +223,14 @@ const GhostBtn = styled.button`
   width: 100%;
   padding: 13px;
   background: transparent;
-  border: 1px solid rgba(255,255,255,0.1);
-  color: #666360;
+  border: 1px solid rgba(0,0,0,0.1);
+  color: #64748b;
   font-size: 14px;
   border-radius: 12px;
   cursor: pointer;
   margin-top: 10px;
   transition: all 0.2s;
-  &:hover { color: #f4ede8; border-color: rgba(255,255,255,0.2); }
+  &:hover { color: #1e293b; border-color: rgba(0,0,0,0.15); }
 `;
 
 /* ─── Success screen ───────────────────────────────────────────────── */
@@ -257,13 +257,13 @@ const SuccessCircle = styled.div`
 const SuccessTitle = styled.h2`
   font-size: 22px;
   font-weight: 700;
-  color: #f4ede8;
+  color: #1e293b;
   margin-bottom: 8px;
 `;
 
 const SuccessText = styled.p`
   font-size: 14px;
-  color: #666360;
+  color: #64748b;
   margin-bottom: 28px;
   line-height: 1.6;
 `;
@@ -273,21 +273,21 @@ const StatusLink = styled(Link)`
   align-items: center;
   gap: 8px;
   padding: 14px 28px;
-  background: #ff9000;
-  color: #1a1720;
+  background: #4f8ef7;
+  color: #ffffff;
   font-size: 15px;
   font-weight: 700;
   border-radius: 12px;
   text-decoration: none;
-  &:hover { background: #e08000; }
+  &:hover { background: #2563eb; }
 `;
 
 /* ─── Spinner / Error ─────────────────────────────────────────────── */
 const Spinner = styled.div`
   width: ${p => p.$sm ? '16px' : '36px'};
   height: ${p => p.$sm ? '16px' : '36px'};
-  border: ${p => p.$sm ? '2px' : '3px'} solid rgba(255,144,0,0.2);
-  border-top-color: #ff9000;
+  border: ${p => p.$sm ? '2px' : '3px'} solid rgba(79,142,247,0.2);
+  border-top-color: #4f8ef7;
   border-radius: 50%;
   animation: ${spin} 0.8s linear infinite;
   ${p => !p.$sm && 'margin: 80px auto;'}
@@ -418,7 +418,7 @@ export default function ReschedulePage() {
               <SuccessText>
                 Tu cita fue movida exitosamente
                 {nd && (
-                  <> al <strong style={{ color: '#ff9000' }}>
+                  <> al <strong style={{ color: '#4f8ef7' }}>
                     {format(nd, "EEEE d 'de' MMMM 'a las' HH:mm", { locale: es })}
                   </strong></>
                 )}.
@@ -454,7 +454,7 @@ export default function ReschedulePage() {
             <ConfirmBox>
               <ConfirmTitle>Resumen del cambio</ConfirmTitle>
               <ConfirmRow>
-                <span style={{ color: '#666360' }}>Fecha actual</span>
+                <span style={{ color: '#64748b' }}>Fecha actual</span>
                 <span style={{ textDecoration: 'line-through', color: '#4a4757' }}>
                   {currentDate
                     ? format(currentDate, "d MMM yyyy, HH:mm", { locale: es })
@@ -462,17 +462,17 @@ export default function ReschedulePage() {
                 </span>
               </ConfirmRow>
               <ConfirmRow>
-                <span style={{ color: '#666360' }}>Nueva fecha</span>
-                <span style={{ color: '#ff9000', fontWeight: 700 }}>
+                <span style={{ color: '#64748b' }}>Nueva fecha</span>
+                <span style={{ color: '#4f8ef7', fontWeight: 700 }}>
                   {format(nd, "d MMM yyyy, HH:mm", { locale: es })}
                 </span>
               </ConfirmRow>
               <ConfirmRow>
-                <span style={{ color: '#666360' }}>Servicio</span>
+                <span style={{ color: '#64748b' }}>Servicio</span>
                 <span>{booking.service?.name}</span>
               </ConfirmRow>
               <ConfirmRow>
-                <span style={{ color: '#666360' }}>Barbero</span>
+                <span style={{ color: '#64748b' }}>Barbero</span>
                 <span>{booking.barber?.name}</span>
               </ConfirmRow>
             </ConfirmBox>
@@ -525,7 +525,7 @@ export default function ReschedulePage() {
             Selecciona el nuevo día y hora para tu cita.
             {tokenExpiry && (
               <> Este enlace expira el{' '}
-                <strong style={{ color: '#ff9000' }}>
+                <strong style={{ color: '#4f8ef7' }}>
                   {format(tokenExpiry, "d MMM 'a las' HH:mm", { locale: es })}
                 </strong>.
               </>

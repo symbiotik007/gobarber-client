@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import { format } from 'date-fns';
@@ -15,15 +15,15 @@ const shimmer = keyframes`
 
 const Page = styled.div`
   min-height: 100vh;
-  background: #080d1c;
-  color: #f0f6ff;
+  background: #ffffff;
+  color: #0f172a;
   font-family: 'Segoe UI', sans-serif;
 `;
 
 const TopBar = styled.header`
   width: 100%;
-  background: #0d1226;
-  border-bottom: 1px solid #162040;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
   padding: 0 24px;
   height: 60px;
   display: flex;
@@ -42,13 +42,13 @@ const UserRow = styled.div`
   display: flex;
   align-items: center;
   gap: 16px;
-  span { font-size: 13px; color: #6b7db3; }
+  span { font-size: 13px; color: #64748b; }
 `;
 
 const SignOutBtn = styled.button`
   background: none;
-  border: 1px solid #1e2d50;
-  color: #6b7db3;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
   padding: 6px 14px;
   border-radius: 8px;
   font-size: 13px;
@@ -70,7 +70,7 @@ const NewBookingBtn = styled.button`
   background: linear-gradient(135deg, #4f8ef7, #2563eb);
   border: none;
   border-radius: 14px;
-  color: #080d1c;
+  color: #ffffff;
   font-size: 16px;
   font-weight: 700;
   cursor: pointer;
@@ -97,12 +97,12 @@ const SectionHeader = styled.div`
 const SectionTitle = styled.h2`
   font-size: 16px;
   font-weight: 600;
-  color: #f0f6ff;
+  color: #0f172a;
 `;
 
 const Badge = styled.span`
-  background: ${p => p.$color || '#162040'};
-  color: ${p => p.$text || '#6b7db3'};
+  background: ${p => p.$color || '#e2e8f0'};
+  color: ${p => p.$text || '#64748b'};
   font-size: 11px;
   font-weight: 700;
   padding: 3px 8px;
@@ -118,7 +118,7 @@ const Dot = styled.div`
 `;
 
 const BookingCard = styled.div`
-  background: #0d1226;
+  background: #ffffff;
   border-radius: 14px;
   padding: 18px 20px;
   margin-bottom: 10px;
@@ -150,7 +150,7 @@ const BookingInfo = styled.div`
 const BookingService = styled.div`
   font-size: 15px;
   font-weight: 600;
-  color: #f0f6ff;
+  color: #0f172a;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -158,7 +158,7 @@ const BookingService = styled.div`
 
 const BookingMeta = styled.div`
   font-size: 13px;
-  color: #4a5780;
+  color: #64748b;
   margin-top: 3px;
   display: flex;
   flex-wrap: wrap;
@@ -187,12 +187,12 @@ const Empty = styled.div`
   padding: 28px;
   color: #2a3660;
   font-size: 14px;
-  background: #0a1020;
+  background: #f5f8ff;
   border-radius: 14px;
 `;
 
 const SkeletonCard = styled.div`
-  background: linear-gradient(90deg, #0d1226 25%, #2a2730 50%, #0d1226 75%);
+  background: linear-gradient(90deg, #f0f4ff 25%, #e2eaff 50%, #f0f4ff 75%);
   background-size: 800px 100%;
   animation: ${shimmer} 1.4s ease infinite;
   border-radius: 14px;
@@ -206,7 +206,7 @@ const STATUS_META = {
   CONFIRMED:       { label: 'Confirmada',        bg: 'rgba(76,175,80,0.12)',  color: '#4caf50', dot: '#4caf50', icon: FiCheck, iconBg: 'rgba(76,175,80,0.12)' },
   COMPLETED:       { label: 'Completada',        bg: 'rgba(99,102,241,0.12)', color: '#818cf8', dot: '#818cf8', icon: FiCheck, iconBg: 'rgba(99,102,241,0.12)' },
   CANCELLED:       { label: 'Cancelada',         bg: 'rgba(224,85,85,0.12)', color: '#e05555', dot: '#e05555', icon: FiX,    iconBg: 'rgba(224,85,85,0.12)' },
-  EXPIRED:         { label: 'Expirada',          bg: '#162040',              color: '#4a5780', dot: '#4a5780', icon: FiAlertCircle, iconBg: '#162040' },
+  EXPIRED:         { label: 'Expirada',          bg: '#e2e8f0',              color: '#64748b', dot: '#64748b', icon: FiAlertCircle, iconBg: '#e2e8f0' },
   NO_SHOW:         { label: 'No asistió',        bg: 'rgba(224,85,85,0.12)', color: '#e05555', dot: '#e05555', icon: FiX,    iconBg: 'rgba(224,85,85,0.12)' },
 };
 
@@ -238,9 +238,9 @@ function BookingItem({ booking, clickable = true }) {
       </BookingInfo>
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6, flexShrink: 0 }}>
         <StatusChip $bg={meta.bg} $color={meta.color}>{meta.label}</StatusChip>
-        <span style={{ fontSize: 13, color: '#6b7db3' }}>{fmt(booking.deposit_amount)}</span>
+        <span style={{ fontSize: 13, color: '#64748b' }}>{fmt(booking.deposit_amount)}</span>
       </div>
-      {clickable && <FiChevronRight size={16} color="#1e2d50" style={{ flexShrink: 0 }} />}
+      {clickable && <FiChevronRight size={16} color="#cbd5e1" style={{ flexShrink: 0 }} />}
     </BookingCard>
   );
 }

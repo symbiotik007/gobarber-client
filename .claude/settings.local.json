@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Select-String -Path \"C:\\\\Users\\\\ASUS\\\\Desktop\\\\barber\\\\gobarber-client\\\\src\\\\pages\\\\BookingStepper.jsx\" -Pattern \"#[0-9a-fA-F]{3,6}|rgb\\\\\\(|rgba\\\\\\(\" | Select-Object -First 80 | ForEach-Object { $_.Line.Trim\\(\\) } | Sort-Object -Unique)",
+      "PowerShell(Select-String -Path \"C:\\\\Users\\\\ASUS\\\\Desktop\\\\barber\\\\gobarber-client\\\\src\\\\pages\\\\Landing.jsx\" -Pattern \"#[0-9a-fA-F]{3,6}\" | ForEach-Object { $_.Line.Trim\\(\\) } | Sort-Object -Unique | Select-Object -First 60)",
+      "PowerShell(Get-NetTCPConnection *)",
+      "Bash(netstat -ano)",
+      "Bash(tasklist /FI 'PID eq __TRACKED_VAR__')",
+      "PowerShell(Get-Process *)",
+      "PowerShell(Stop-Process *)",
+      "WebSearch",
+      "WebFetch(domain:unsplash.com)"
+    ]
+  }
+}

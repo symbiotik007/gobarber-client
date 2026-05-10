@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAuth } from '../contexts/AuthContext';
@@ -14,7 +14,7 @@ const Box = styled.div`
   width: 100%;
   max-width: 400px;
   padding: 40px;
-  background: #3e3b47;
+  background: #cbd5e1;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
@@ -23,12 +23,12 @@ const Box = styled.div`
 
 const Title = styled.h1`
   font-size: 28px;
-  color: #ff9000;
+  color: #4f8ef7;
   margin-bottom: 8px;
 `;
 
 const Subtitle = styled.p`
-  color: #666360;
+  color: #64748b;
   margin-bottom: 32px;
   font-size: 14px;
 `;
@@ -36,34 +36,34 @@ const Subtitle = styled.p`
 const Input = styled.input`
   width: 100%;
   padding: 16px;
-  background: #232129;
-  border: 2px solid #232129;
+  background: #f8faff;
+  border: 2px solid #f8faff;
   border-radius: 10px;
-  color: #f4ede8;
+  color: #1e293b;
   margin-bottom: 8px;
   font-size: 16px;
 
   &:focus {
     outline: none;
-    border-color: #ff9000;
+    border-color: #4f8ef7;
   }
 
-  &::placeholder { color: #666360; }
+  &::placeholder { color: #64748b; }
 `;
 
 const Button = styled.button`
   width: 100%;
   padding: 16px;
-  background: #ff9000;
+  background: #4f8ef7;
   border: none;
   border-radius: 10px;
-  color: #312e38;
+  color: #ffffff;
   font-size: 16px;
   font-weight: bold;
   margin-top: 16px;
   transition: background 0.2s;
 
-  &:hover { background: #e08000; }
+  &:hover { background: #2563eb; }
   &:disabled { opacity: 0.6; cursor: not-allowed; }
 `;
 
@@ -75,10 +75,10 @@ const Error = styled.p`
 
 const SignUpLink = styled.p`
   margin-top: 24px;
-  color: #666360;
+  color: #64748b;
   font-size: 14px;
 
-  a { color: #ff9000; margin-left: 4px; }
+  a { color: #4f8ef7; margin-left: 4px; }
 `;
 
 export default function SignIn() {

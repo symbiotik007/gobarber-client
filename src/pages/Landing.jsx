@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled, { keyframes, createGlobalStyle } from 'styled-components';
 import {
@@ -27,41 +27,27 @@ const SHOP = {
   rating: 4.8,
   reviewCount: 7,
   heroImage:
-    'https://images.unsplash.com/photo-1621605815971-fbc98d665033?auto=format&fit=crop&w=1600&q=80',
-  logo: 'https://ui-avatars.com/api/?name=T&background=ff9000&color=1a1720&size=120&font-size=0.6&bold=true',
+    '/unnamed.jpg',
+  logo: 'https://ui-avatars.com/api/?name=T&background=2563eb&color=ffffff&size=120&font-size=0.6&bold=true',
   mapEmbed:
-    'https://maps.google.com/maps?q=Calle+18+%2349-75,+Pasto,+Narino,+Colombia&hl=es&z=16&output=embed',
+    'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15955.656186821718!2d-77.29945537264781!3d1.2198858902215852!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e2ed510e7ab1d87%3A0xb3d5a0e1dc26a862!2sTroya%20Barberia%20premium!5e0!3m2!1sen!2sco!4v1778448288538!5m2!1sen!2sco',
 };
 
 const BARBERS_INFO = {
   default: [
     {
-      name: 'Jhayser',
+      name: 'Luis Fernando',
       role: 'Fundador & Master Barber',
-      specialty: 'Cortes clásicos · Diseño de barba',
+      specialty: 'Cortes clásicos, modernos y diseños de barba, etc.',
       exp: '8 años de experiencia',
-      photo: 'https://images.unsplash.com/photo-1618077360395-f3068be8e001?auto=format&fit=crop&w=400&q=80',
+      photo: '/Luis.webp',
     },
     {
-      name: 'Fernando',
+      name: 'Jhayser',
       role: 'Senior Barber',
-      specialty: 'Cortes modernos · Tratamientos',
+      specialty: 'Cortes modernos, tratamientos y diseños, etc.',
       exp: '5 años de experiencia',
-      photo: 'https://images.unsplash.com/photo-1595152772835-219674b2a163?auto=format&fit=crop&w=400&q=80',
-    },
-    {
-      name: 'Sebastián',
-      role: 'Barber & Colorista',
-      specialty: 'Color · Degradados · Diseño',
-      exp: '4 años de experiencia',
-      photo: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=400&q=80',
-    },
-    {
-      name: 'Camilo',
-      role: 'Barber',
-      specialty: 'Cortes urbanos · Afro',
-      exp: '3 años de experiencia',
-      photo: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80',
+      photo: '/Jhoymar-Jojoa.webp',
     },
   ],
 };
@@ -75,6 +61,10 @@ const REVIEWS = [
   { id: 6, name: 'Juan Pérez', rating: 4, comment: 'Excelente lugar, muy profesionales. El ambiente es cálido y te hacen sentir como en casa. Precios muy justos.', date: 'hace 1 mes', avatar: 'JP' },
   { id: 7, name: 'Diego Morales', rating: 5, comment: 'Sin duda la mejor barbería de Pasto. Camilo hizo un trabajo excepcional con mi cabello afro. Muy contento.', date: 'hace 2 meses', avatar: 'DM' },
 ];
+
+const GlobalStyle = createGlobalStyle`
+  body { background: #ffffff; margin: 0; }
+`;
 
 /* ─── Animations ─────────────────────────────────────────── */
 const fadeUp = keyframes`
@@ -90,26 +80,34 @@ const shimmer = keyframes`
 /* ─── Nav ────────────────────────────────────────────────── */
 const Nav = styled.nav`
   position: fixed;
-  top: 0; left: 0; right: 0;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 100;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 18px 40px;
-  background: ${p => p.$scrolled ? 'rgba(18,15,24,0.97)' : 'transparent'};
-  backdrop-filter: ${p => p.$scrolled ? 'blur(12px)' : 'none'};
-  border-bottom: ${p => p.$scrolled ? '1px solid rgba(255,144,0,0.1)' : 'none'};
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 8px 12px;
+  background: ${p => p.$scrolled ? 'rgba(255,255,255,0.95)' : 'rgba(0,0,0,0.4)'};
+  backdrop-filter: blur(12px);
+  border: 1px solid ${p => p.$scrolled ? 'rgba(79,142,247,0.2)' : 'rgba(255,255,255,0.15)'};
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.15);
   transition: all 0.3s ease;
+  width: auto;
 
-  @media (max-width: 600px) { padding: 16px 20px; }
+  @media (max-width: 600px) { top: 12px; padding: 6px 10px; }
 `;
 
 const NavLogo = styled.span`
-  font-size: 18px;
-  font-weight: 700;
-  color: #ff9000;
-  letter-spacing: 2px;
+  font-size: 20px;
+  font-weight: 800;
+  color: ${p => p.$scrolled ? '#4f8ef7' : '#ffffff'};
+  letter-spacing: 4px;
   text-transform: uppercase;
+  text-shadow: ${p => p.$scrolled ? 'none' : '0 2px 12px rgba(0,0,0,0.4)'};
+  transition: all 0.3s ease;
 `;
 
 const NavActions = styled.div`
@@ -121,22 +119,38 @@ const NavActions = styled.div`
 const NavBtn = styled.button`
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 20px;
-  background: ${p => p.$primary ? '#ff9000' : 'transparent'};
-  color: ${p => p.$primary ? '#1a1720' : '#f4ede8'};
-  border: 1px solid ${p => p.$primary ? '#ff9000' : 'rgba(244,237,232,0.3)'};
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: ${p => p.$primary ? '700' : '400'};
+  gap: 6px;
+  padding: 7px 14px;
+  background: ${p => p.$primary ? '#4f8ef7' : 'rgba(255,255,255,0.12)'};
+  color: #ffffff;
+  border: 1.5px solid ${p => p.$primary ? '#4f8ef7' : 'rgba(255,255,255,0.5)'};
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+  backdrop-filter: blur(4px);
+  text-shadow: 0 1px 4px rgba(0,0,0,0.3);
 
   &:hover {
-    background: ${p => p.$primary ? '#e08000' : 'rgba(255,144,0,0.1)'};
-    border-color: #ff9000;
-    color: ${p => p.$primary ? '#1a1720' : '#ff9000'};
+    background: ${p => p.$primary ? '#2563eb' : 'rgba(255,255,255,0.25)'};
+    border-color: ${p => p.$primary ? '#2563eb' : '#ffffff'};
+    transform: translateY(-1px);
   }
+
+  /* Cuando el nav está scrolled (fondo blanco) */
+  ${p => p.$scrolled && `
+    background: ${p.$primary ? '#4f8ef7' : 'transparent'};
+    color: ${p.$primary ? '#ffffff' : '#1e293b'};
+    border-color: ${p.$primary ? '#4f8ef7' : 'rgba(15,23,42,0.2)'};
+    text-shadow: none;
+    backdrop-filter: none;
+    &:hover {
+      background: ${p.$primary ? '#2563eb' : 'rgba(79,142,247,0.08)'};
+      color: ${p.$primary ? '#ffffff' : '#4f8ef7'};
+      border-color: #4f8ef7;
+    }
+  `}
 
   @media (max-width: 480px) {
     span { display: none; }
@@ -159,11 +173,8 @@ const HeroBg = styled.div`
   inset: 0;
   background-image: url(${p => p.$src});
   background-size: cover;
-  background-position: center;
-  transform: scale(1.05);
+  background-position: center top;
   transition: transform 8s ease;
-
-  ${Hero}:hover & { transform: scale(1.08); }
 
   &::after {
     content: '';
@@ -171,9 +182,9 @@ const HeroBg = styled.div`
     inset: 0;
     background: linear-gradient(
       to bottom,
-      rgba(18,15,24,0.2) 0%,
-      rgba(18,15,24,0.5) 50%,
-      rgba(18,15,24,0.95) 100%
+      rgba(0,0,0,0.45) 0%,
+      rgba(0,0,0,0.55) 50%,
+      rgba(0,0,0,0.75) 100%
     );
   }
 `;
@@ -181,21 +192,29 @@ const HeroBg = styled.div`
 const HeroContent = styled.div`
   position: relative;
   z-index: 2;
-  padding: 0 60px 80px;
-  max-width: 700px;
+  padding: 40px 48px;
+  margin: 0 40px 60px;
+  max-width: 640px;
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 20px;
   animation: ${fadeUp} 0.8s ease both;
 
-  @media (max-width: 768px) { padding: 0 24px 60px; }
+  @media (max-width: 768px) {
+    margin: 0 16px 40px;
+    padding: 28px 24px;
+  }
 `;
 
 const HeroBadge = styled.span`
   display: inline-block;
   padding: 6px 14px;
-  background: rgba(255,144,0,0.15);
-  border: 1px solid rgba(255,144,0,0.4);
+  background: rgba(79,142,247,0.15);
+  border: 1px solid rgba(79,142,247,0.4);
   border-radius: 20px;
   font-size: 12px;
-  color: #ff9000;
+  color: #4f8ef7;
   letter-spacing: 2px;
   text-transform: uppercase;
   margin-bottom: 16px;
@@ -212,10 +231,11 @@ const HeroTitle = styled.h1`
 
 const HeroSub = styled.p`
   font-size: 18px;
-  color: rgba(244,237,232,0.75);
+  color: rgba(255,255,255,0.85);
   margin-bottom: 36px;
   line-height: 1.6;
   max-width: 500px;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.4);
 `;
 
 const HeroRating = styled.div`
@@ -225,13 +245,13 @@ const HeroRating = styled.div`
   margin-bottom: 32px;
 
   .stars { display: flex; gap: 3px; }
-  .count { color: rgba(244,237,232,0.6); font-size: 14px; }
+  .count { color: rgba(255,255,255,0.75); font-size: 14px; }
 `;
 
 const HeroCTA = styled.button`
   padding: 16px 36px;
-  background: linear-gradient(135deg, #ff9000, #ffb347);
-  color: #1a1720;
+  background: linear-gradient(135deg, #4f8ef7, #93c5fd);
+  color: #ffffff;
   border: none;
   border-radius: 50px;
   font-size: 16px;
@@ -239,21 +259,21 @@ const HeroCTA = styled.button`
   letter-spacing: 0.5px;
   cursor: pointer;
   transition: all 0.3s;
-  box-shadow: 0 8px 32px rgba(255,144,0,0.35);
+  box-shadow: 0 8px 32px rgba(79,142,247,0.35);
   display: flex;
   align-items: center;
   gap: 8px;
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 40px rgba(255,144,0,0.5);
+    box-shadow: 0 12px 40px rgba(79,142,247,0.5);
   }
 `;
 
 /* ─── Info Strip ─────────────────────────────────────────── */
 const InfoStrip = styled.div`
-  background: #1e1b28;
-  border-bottom: 1px solid rgba(255,144,0,0.1);
+  background: #ffffff;
+  border-bottom: 1px solid rgba(79,142,247,0.1);
   padding: 20px 60px;
   display: flex;
   gap: 32px;
@@ -267,20 +287,20 @@ const InfoItem = styled.a`
   display: flex;
   align-items: center;
   gap: 8px;
-  color: rgba(244,237,232,0.7);
+  color: rgba(15,23,42,0.65);
   font-size: 14px;
   text-decoration: none;
   transition: color 0.2s;
   cursor: pointer;
 
-  svg { color: #ff9000; flex-shrink: 0; }
+  svg { color: #4f8ef7; flex-shrink: 0; }
 
-  &:hover { color: #ff9000; }
+  &:hover { color: #4f8ef7; }
 `;
 
 /* ─── Main Layout ────────────────────────────────────────── */
 const Main = styled.main`
-  background: #120f18;
+  background: #f0f5ff;
   padding: 80px 60px;
   display: grid;
   grid-template-columns: 1fr 420px;
@@ -302,14 +322,14 @@ const SectionLabel = styled.p`
   font-size: 11px;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: #ff9000;
+  color: #4f8ef7;
   margin-bottom: 8px;
 `;
 
 const SectionTitle = styled.h2`
   font-size: 32px;
   font-weight: 700;
-  color: #f4ede8;
+  color: #1e293b;
   margin-bottom: 20px;
   line-height: 1.2;
 `;
@@ -317,7 +337,7 @@ const SectionTitle = styled.h2`
 const SectionText = styled.p`
   font-size: 16px;
   line-height: 1.8;
-  color: rgba(244,237,232,0.65);
+  color: rgba(15,23,42,0.65);
   margin-bottom: 40px;
 `;
 
@@ -325,7 +345,7 @@ const SectionText = styled.p`
 const MapWrapper = styled.div`
   border-radius: 16px;
   overflow: hidden;
-  border: 1px solid rgba(255,144,0,0.15);
+  border: 1px solid rgba(79,142,247,0.15);
   margin-bottom: 32px;
   height: 280px;
 
@@ -333,7 +353,7 @@ const MapWrapper = styled.div`
     width: 100%;
     height: 100%;
     border: none;
-    filter: invert(90%) hue-rotate(180deg);
+    filter: none;
   }
 `;
 
@@ -342,22 +362,23 @@ const MapAddress = styled.div`
   align-items: flex-start;
   gap: 10px;
   padding: 14px 16px;
-  background: #1e1b28;
+  background: #ffffff;
   border-radius: 10px;
   font-size: 14px;
-  color: rgba(244,237,232,0.8);
-  border: 1px solid rgba(255,144,0,0.1);
+  color: rgba(15,23,42,0.8);
+  border: 1px solid rgba(79,142,247,0.1);
   margin-bottom: 32px;
 
-  svg { color: #ff9000; margin-top: 2px; flex-shrink: 0; }
+  svg { color: #4f8ef7; margin-top: 2px; flex-shrink: 0; }
 `;
 
 /* ─── Hours ──────────────────────────────────────────────── */
 const HoursCard = styled.div`
-  background: #1e1b28;
+  background: #ffffff;
   border-radius: 16px;
   padding: 24px;
-  border: 1px solid rgba(255,144,0,0.1);
+  border: 1px solid rgba(79,142,247,0.1);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
   margin-bottom: 32px;
 `;
 
@@ -366,22 +387,22 @@ const HoursTitle = styled.h3`
   align-items: center;
   gap: 8px;
   font-size: 15px;
-  color: #f4ede8;
+  color: #1e293b;
   margin-bottom: 16px;
-  svg { color: #ff9000; }
+  svg { color: #4f8ef7; }
 `;
 
 const HoursRow = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 10px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
   font-size: 14px;
 
   &:last-child { border-bottom: none; }
 
-  .day { color: rgba(244,237,232,0.6); }
-  .time { color: ${p => p.$closed ? 'rgba(244,237,232,0.3)' : '#f4ede8'}; font-weight: 500; }
+  .day { color: rgba(15,23,42,0.55); }
+  .time { color: ${p => p.$closed ? 'rgba(15,23,42,0.25)' : '#1e293b'}; font-weight: 500; }
 `;
 
 /* ─── Professionals ──────────────────────────────────────── */
@@ -395,17 +416,17 @@ const BarbersGrid = styled.div`
 `;
 
 const BarberCard = styled.div`
-  background: #1e1b28;
+  background: #ffffff;
   border-radius: 16px;
   overflow: hidden;
-  border: 1px solid rgba(255,144,0,0.08);
+  border: 1px solid rgba(79,142,247,0.08);
   transition: all 0.3s;
   cursor: pointer;
 
   &:hover {
-    border-color: rgba(255,144,0,0.4);
+    border-color: rgba(79,142,247,0.4);
     transform: translateY(-4px);
-    box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.12);
   }
 `;
 
@@ -421,7 +442,7 @@ const BarberPhoto = styled.div`
     position: absolute;
     bottom: 0; left: 0; right: 0;
     height: 60px;
-    background: linear-gradient(transparent, #1e1b28);
+    background: linear-gradient(transparent, rgba(0,0,0,0.25));
   }
 `;
 
@@ -432,29 +453,29 @@ const BarberInfo = styled.div`
 const BarberName = styled.h3`
   font-size: 16px;
   font-weight: 700;
-  color: #f4ede8;
+  color: #1e293b;
   margin-bottom: 2px;
 `;
 
 const BarberRole = styled.p`
   font-size: 12px;
-  color: #ff9000;
+  color: #4f8ef7;
   margin-bottom: 6px;
 `;
 
 const BarberSpec = styled.p`
   font-size: 12px;
-  color: rgba(244,237,232,0.5);
+  color: rgba(15,23,42,0.45);
   margin-bottom: 12px;
 `;
 
 const BookBtn = styled.button`
   width: 100%;
   padding: 10px;
-  background: rgba(255,144,0,0.1);
-  border: 1px solid rgba(255,144,0,0.3);
+  background: rgba(79,142,247,0.1);
+  border: 1px solid rgba(79,142,247,0.3);
   border-radius: 8px;
-  color: #ff9000;
+  color: #4f8ef7;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
@@ -465,17 +486,17 @@ const BookBtn = styled.button`
   gap: 6px;
 
   &:hover {
-    background: #ff9000;
-    color: #1a1720;
-    border-color: #ff9000;
+    background: #4f8ef7;
+    color: #ffffff;
+    border-color: #4f8ef7;
   }
 `;
 
 /* ─── Reviews ────────────────────────────────────────────── */
 const ReviewsSection = styled.section`
-  background: #120f18;
+  background: #f0f5ff;
   padding: 80px 60px;
-  border-top: 1px solid rgba(255,144,0,0.08);
+  border-top: 1px solid rgba(79,142,247,0.08);
 
   @media (max-width: 768px) { padding: 60px 24px; }
 `;
@@ -499,21 +520,21 @@ const RatingBig = styled.div`
 const RatingNumber = styled.span`
   font-size: 72px;
   font-weight: 700;
-  color: #ff9000;
+  color: #4f8ef7;
   line-height: 1;
 `;
 
 const RatingInfo = styled.div`
   .stars { display: flex; gap: 4px; margin-bottom: 4px; }
-  .count { font-size: 14px; color: rgba(244,237,232,0.5); }
+  .count { font-size: 14px; color: rgba(15,23,42,0.45); }
 `;
 
 const SeeAllBtn = styled.button`
   padding: 12px 24px;
   background: transparent;
-  border: 1px solid rgba(255,144,0,0.4);
+  border: 1px solid rgba(79,142,247,0.4);
   border-radius: 8px;
-  color: #ff9000;
+  color: #4f8ef7;
   font-size: 14px;
   cursor: pointer;
   transition: all 0.2s;
@@ -521,7 +542,7 @@ const SeeAllBtn = styled.button`
   align-items: center;
   gap: 8px;
 
-  &:hover { background: rgba(255,144,0,0.1); }
+  &:hover { background: rgba(79,142,247,0.1); }
 `;
 
 const ReviewsGrid = styled.div`
@@ -533,10 +554,11 @@ const ReviewsGrid = styled.div`
 `;
 
 const ReviewCard = styled.div`
-  background: #1e1b28;
+  background: #ffffff;
   border-radius: 16px;
   padding: 24px;
-  border: 1px solid rgba(255,255,255,0.05);
+  border: 1px solid rgba(79,142,247,0.1);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
   animation: ${fadeUp} 0.6s ease both;
   animation-delay: ${p => p.$i * 0.1}s;
 `;
@@ -552,25 +574,25 @@ const ReviewerAvatar = styled.div`
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #ff9000, #e08000);
+  background: linear-gradient(135deg, #4f8ef7, #2563eb);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 13px;
   font-weight: 700;
-  color: #1a1720;
+  color: #ffffff;
   flex-shrink: 0;
 `;
 
 const ReviewerName = styled.p`
   font-size: 15px;
   font-weight: 600;
-  color: #f4ede8;
+  color: #1e293b;
 `;
 
 const ReviewDate = styled.p`
   font-size: 12px;
-  color: rgba(244,237,232,0.4);
+  color: rgba(15,23,42,0.35);
 `;
 
 const ReviewStars = styled.div`
@@ -582,17 +604,17 @@ const ReviewStars = styled.div`
 const ReviewText = styled.p`
   font-size: 14px;
   line-height: 1.7;
-  color: rgba(244,237,232,0.65);
+  color: rgba(15,23,42,0.65);
 `;
 
 /* ─── Footer ─────────────────────────────────────────────── */
 const Footer = styled.footer`
-  background: #0d0b12;
+  background: #ffffff;
   padding: 40px 60px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-top: 1px solid rgba(255,144,0,0.08);
+  border-top: 1px solid rgba(79,142,247,0.08);
   flex-wrap: wrap;
   gap: 16px;
 
@@ -602,13 +624,13 @@ const Footer = styled.footer`
 const FooterLogo = styled.p`
   font-size: 16px;
   font-weight: 700;
-  color: #ff9000;
+  color: #4f8ef7;
   letter-spacing: 2px;
 `;
 
 const FooterText = styled.p`
   font-size: 13px;
-  color: rgba(244,237,232,0.3);
+  color: rgba(15,23,42,0.25);
 `;
 
 /* ─── Stars helper ───────────────────────────────────────── */
@@ -616,9 +638,9 @@ function Stars({ rating, size = 16 }) {
   return (
     <span style={{ display: 'flex', gap: 3 }}>
       {[1, 2, 3, 4, 5].map(n => {
-        if (rating >= n) return <FaStar key={n} size={size} color="#ff9000" />;
-        if (rating >= n - 0.5) return <FaStarHalfAlt key={n} size={size} color="#ff9000" />;
-        return <FaRegStar key={n} size={size} color="#ff9000" />;
+        if (rating >= n) return <FaStar key={n} size={size} color="#4f8ef7" />;
+        if (rating >= n - 0.5) return <FaStarHalfAlt key={n} size={size} color="#4f8ef7" />;
+        return <FaRegStar key={n} size={size} color="#4f8ef7" />;
       })}
     </span>
   );
@@ -656,19 +678,20 @@ export default function Landing() {
 
   return (
     <>
+      <GlobalStyle />
       {showReviews && (
         <ReviewsModal reviews={REVIEWS} onClose={() => setShowReviews(false)} />
       )}
 
       {/* NAV */}
       <Nav $scrolled={scrolled}>
-        <NavLogo>Troya</NavLogo>
+        <div />
         <NavActions>
-          <NavBtn onClick={() => navigate('/login')}>
+          <NavBtn $scrolled={scrolled} onClick={() => navigate('/login')}>
             <FiLogIn size={16} />
             <span>Iniciar sesión</span>
           </NavBtn>
-          <NavBtn $primary onClick={() => navigate('/register')}>
+          <NavBtn $primary $scrolled={scrolled} onClick={() => navigate('/register')}>
             <span>Crear cuenta</span>
           </NavBtn>
         </NavActions>
@@ -685,10 +708,10 @@ export default function Landing() {
             <div className="stars">
               <Stars rating={SHOP.rating} size={18} />
             </div>
-            <strong style={{ color: '#ff9000', fontSize: 18 }}>{SHOP.rating}</strong>
+            <strong style={{ color: '#ffffff', fontSize: 18 }}>{SHOP.rating}</strong>
             <button
               className="count"
-              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(244,237,232,0.6)', fontSize: 14, textDecoration: 'underline' }}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.75)', fontSize: 14, textDecoration: 'underline' }}
               onClick={() => setShowReviews(true)}
             >
               {SHOP.reviewCount} reseñas
@@ -733,6 +756,7 @@ export default function Landing() {
               title="Troya Barber Studio"
               allowFullScreen
               loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
             />
           </MapWrapper>
           <MapAddress>
@@ -778,13 +802,13 @@ export default function Landing() {
           {/* CONTACT */}
           <HoursCard>
             <HoursTitle><FiPhone size={16} /> Contacto</HoursTitle>
-            <InfoItem href={`tel:${SHOP.phone}`} style={{ display: 'flex', padding: '10px 0', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+            <InfoItem href={`tel:${SHOP.phone}`} style={{ display: 'flex', padding: '10px 0', borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
               <FiPhone size={14} /> {SHOP.phone}
             </InfoItem>
             <InfoItem
               href={`https://wa.me/${SHOP.whatsapp.replace(/\D/g, '')}`}
               target="_blank"
-              style={{ display: 'flex', padding: '10px 0', borderBottom: '1px solid rgba(255,255,255,0.05)' }}
+              style={{ display: 'flex', padding: '10px 0', borderBottom: '1px solid rgba(0,0,0,0.06)' }}
             >
               <FaWhatsapp size={14} /> Escribir por WhatsApp
             </InfoItem>
@@ -800,20 +824,20 @@ export default function Landing() {
           {/* MINI REVIEWS */}
           <HoursCard>
             <HoursTitle><FiStar size={16} /> Reseñas destacadas</HoursTitle>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20, paddingBottom: 16, borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-              <span style={{ fontSize: 48, fontWeight: 700, color: '#ff9000', lineHeight: 1 }}>{SHOP.rating}</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20, paddingBottom: 16, borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
+              <span style={{ fontSize: 48, fontWeight: 700, color: '#4f8ef7', lineHeight: 1 }}>{SHOP.rating}</span>
               <div>
                 <Stars rating={SHOP.rating} size={16} />
-                <p style={{ fontSize: 12, color: 'rgba(244,237,232,0.4)', marginTop: 4 }}>{SHOP.reviewCount} reseñas</p>
+                <p style={{ fontSize: 12, color: 'rgba(15,23,42,0.35)', marginTop: 4 }}>{SHOP.reviewCount} reseñas</p>
               </div>
             </div>
             {REVIEWS.slice(0, 3).map(r => (
-              <div key={r.id} style={{ paddingBottom: 14, marginBottom: 14, borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+              <div key={r.id} style={{ paddingBottom: 14, marginBottom: 14, borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                  <span style={{ fontSize: 13, fontWeight: 600, color: '#f4ede8' }}>{r.name}</span>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: '#1e293b' }}>{r.name}</span>
                   <Stars rating={r.rating} size={11} />
                 </div>
-                <p style={{ fontSize: 13, color: 'rgba(244,237,232,0.55)', lineHeight: 1.6 }}>
+                <p style={{ fontSize: 13, color: 'rgba(15,23,42,0.5)', lineHeight: 1.6 }}>
                   {r.comment.length > 80 ? r.comment.slice(0, 80) + '...' : r.comment}
                 </p>
               </div>

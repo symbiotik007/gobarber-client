@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+﻿import { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { format, parseISO, differenceInSeconds } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -12,7 +12,7 @@ import api from '../services/api';
 /* ─── Global ─────────────────────────────────────────────────────── */
 const Global = createGlobalStyle`
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: #1a1720; color: #f4ede8; font-family: 'Segoe UI', sans-serif; }
+  body { background: #ffffff; color: #1e293b; font-family: 'Segoe UI', sans-serif; }
 `;
 
 /* ─── Animations ─────────────────────────────────────────────────── */
@@ -23,7 +23,7 @@ const pulse = keyframes`0%,100%{opacity:1}50%{opacity:.35}`;
 /* ─── Layout ──────────────────────────────────────────────────────── */
 const Page = styled.div`
   min-height: 100vh;
-  background: #1a1720;
+  background: #ffffff;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -42,18 +42,18 @@ const TopBar = styled.div`
 const Logo = styled.span`
   font-size: 18px;
   font-weight: 700;
-  color: #ff9000;
+  color: #4f8ef7;
   letter-spacing: 1px;
 `;
 
 const HomeLink = styled(Link)`
   font-size: 13px;
-  color: #666360;
+  color: #64748b;
   text-decoration: none;
   display: flex;
   align-items: center;
   gap: 4px;
-  &:hover { color: #ff9000; }
+  &:hover { color: #4f8ef7; }
 `;
 
 const Card = styled.div`
@@ -65,7 +65,7 @@ const Card = styled.div`
 
 /* ─── Status badge ────────────────────────────────────────────────── */
 const STATUS_META = {
-  PENDING_PAYMENT: { label: 'Pendiente de pago', color: '#ff9000', bg: 'rgba(255,144,0,0.12)', Icon: FiClock },
+  PENDING_PAYMENT: { label: 'Pendiente de pago', color: '#4f8ef7', bg: 'rgba(79,142,247,0.12)', Icon: FiClock },
   CONFIRMED:       { label: 'Confirmada',         color: '#4caf50', bg: 'rgba(76,175,80,0.12)',  Icon: FiCheck },
   COMPLETED:       { label: 'Completada',         color: '#4caf50', bg: 'rgba(76,175,80,0.12)',  Icon: FiCheck },
   CANCELLED:       { label: 'Cancelada',           color: '#f44336', bg: 'rgba(244,67,54,0.12)', Icon: FiX    },
@@ -88,7 +88,7 @@ const StatusBadge = styled.div`
 
 /* ─── Info grid ───────────────────────────────────────────────────── */
 const InfoGrid = styled.div`
-  background: #232129;
+  background: #f8faff;
   border-radius: 16px;
   padding: 20px;
   display: flex;
@@ -104,14 +104,14 @@ const InfoRow = styled.div`
 `;
 
 const InfoIcon = styled.div`
-  color: #ff9000;
+  color: #4f8ef7;
   margin-top: 2px;
   flex-shrink: 0;
 `;
 
 const InfoLabel = styled.div`
   font-size: 11px;
-  color: #666360;
+  color: #64748b;
   text-transform: uppercase;
   letter-spacing: .8px;
   margin-bottom: 2px;
@@ -119,14 +119,14 @@ const InfoLabel = styled.div`
 
 const InfoValue = styled.div`
   font-size: 15px;
-  color: #f4ede8;
+  color: #1e293b;
   font-weight: 500;
 `;
 
 /* ─── Countdown ───────────────────────────────────────────────────── */
 const CountdownBox = styled.div`
-  background: rgba(255,144,0,0.08);
-  border: 1px solid rgba(255,144,0,0.25);
+  background: rgba(79,142,247,0.08);
+  border: 1px solid rgba(79,142,247,0.25);
   border-radius: 12px;
   padding: 16px 20px;
   margin-bottom: 20px;
@@ -136,21 +136,21 @@ const CountdownBox = styled.div`
 const CountdownTime = styled.div`
   font-size: 32px;
   font-weight: 700;
-  color: ${p => p.$urgent ? '#f44336' : '#ff9000'};
+  color: ${p => p.$urgent ? '#f44336' : '#4f8ef7'};
   font-variant-numeric: tabular-nums;
   animation: ${p => p.$urgent ? pulse : 'none'} 1s ease infinite;
 `;
 
 const CountdownLabel = styled.div`
   font-size: 12px;
-  color: #999591;
+  color: #94a3b8;
   margin-top: 4px;
 `;
 
 /* ─── Payment instructions ────────────────────────────────────────── */
 const PayBox = styled.div`
-  background: #232129;
-  border: 1px solid rgba(255,144,0,0.2);
+  background: #f8faff;
+  border: 1px solid rgba(79,142,247,0.2);
   border-radius: 16px;
   padding: 20px;
   margin-bottom: 20px;
@@ -159,7 +159,7 @@ const PayBox = styled.div`
 const PayTitle = styled.div`
   font-size: 14px;
   font-weight: 700;
-  color: #f4ede8;
+  color: #1e293b;
   margin-bottom: 14px;
 `;
 
@@ -168,17 +168,17 @@ const PayRow = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 10px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
   &:last-child { border-bottom: none; }
 `;
 
-const PayKey = styled.span`font-size:13px;color:#999591;`;
-const PayVal = styled.span`font-size:14px;color:#f4ede8;font-weight:600;`;
+const PayKey = styled.span`font-size:13px;color:#94a3b8;`;
+const PayVal = styled.span`font-size:14px;color:#1e293b;font-weight:600;`;
 
 const CopyBtn = styled.button`
   background: none;
   border: none;
-  color: #ff9000;
+  color: #4f8ef7;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -186,7 +186,7 @@ const CopyBtn = styled.button`
   font-size: 12px;
   padding: 4px 8px;
   border-radius: 6px;
-  &:hover { background: rgba(255,144,0,0.1); }
+  &:hover { background: rgba(79,142,247,0.1); }
 `;
 
 const Warning = styled.div`
@@ -209,7 +209,7 @@ const TimelineWrap = styled.div`
 
 const TimelineTitle = styled.div`
   font-size: 11px;
-  color: #666360;
+  color: #64748b;
   text-transform: uppercase;
   letter-spacing: 1px;
   margin-bottom: 14px;
@@ -236,7 +236,7 @@ const TlDot = styled.div`
   height: 28px;
   border-radius: 50%;
   flex-shrink: 0;
-  background: ${p => p.$color || '#2d2b35'};
+  background: ${p => p.$color || '#e2e8f0'};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -252,13 +252,13 @@ const TlLine = styled.div`
   top: 30px;
   bottom: 0;
   width: 2px;
-  background: #2d2b35;
+  background: #e2e8f0;
   class: tl-line;
 `;
 
 const TlBody = styled.div`flex: 1;`;
-const TlStatus = styled.div`font-size:14px;font-weight:600;color:#f4ede8;`;
-const TlReason = styled.div`font-size:12px;color:#666360;margin-top:2px;`;
+const TlStatus = styled.div`font-size:14px;font-weight:600;color:#1e293b;`;
+const TlReason = styled.div`font-size:12px;color:#64748b;margin-top:2px;`;
 const TlDate = styled.div`font-size:11px;color:#4a4757;margin-top:4px;`;
 
 /* ─── Action buttons ──────────────────────────────────────────────── */
@@ -275,14 +275,14 @@ const PrimaryBtn = styled.a`
   justify-content: center;
   gap: 8px;
   padding: 14px 24px;
-  background: #ff9000;
-  color: #1a1720;
+  background: #4f8ef7;
+  color: #ffffff;
   font-size: 15px;
   font-weight: 700;
   border-radius: 12px;
   text-decoration: none;
   transition: background 0.2s;
-  &:hover { background: #e08000; }
+  &:hover { background: #2563eb; }
 `;
 
 const SecondaryBtn = styled(Link)`
@@ -292,21 +292,21 @@ const SecondaryBtn = styled(Link)`
   gap: 8px;
   padding: 14px 24px;
   background: transparent;
-  border: 1px solid rgba(255,144,0,0.3);
-  color: #ff9000;
+  border: 1px solid rgba(79,142,247,0.3);
+  color: #4f8ef7;
   font-size: 15px;
   font-weight: 600;
   border-radius: 12px;
   text-decoration: none;
   transition: background 0.2s;
-  &:hover { background: rgba(255,144,0,0.08); }
+  &:hover { background: rgba(79,142,247,0.08); }
 `;
 
 /* ─── Spinner / Error ─────────────────────────────────────────────── */
 const Spinner = styled.div`
   width: 36px; height: 36px;
-  border: 3px solid rgba(255,144,0,0.2);
-  border-top-color: #ff9000;
+  border: 3px solid rgba(79,142,247,0.2);
+  border-top-color: #4f8ef7;
   border-radius: 50%;
   animation: ${spin} 0.8s linear infinite;
   margin: 80px auto;
@@ -345,7 +345,7 @@ function fmtSecs(s) {
 
 function statusDotColor(status) {
   const meta = STATUS_META[status];
-  return meta ? meta.color : '#666360';
+  return meta ? meta.color : '#64748b';
 }
 
 function tlLabel(item) {
@@ -459,7 +459,7 @@ export default function BookingStatusPage() {
         <Card>
           {/* ── Status badge ── */}
           <div style={{ marginBottom: 20 }}>
-            <div style={{ fontSize: 13, color: '#666360', marginBottom: 10 }}>
+            <div style={{ fontSize: 13, color: '#64748b', marginBottom: 10 }}>
               Estado de tu reserva
             </div>
             <StatusBadge $color={meta.color} $bg={meta.bg}>
@@ -535,7 +535,7 @@ export default function BookingStatusPage() {
                 <PayRow>
                   <PayKey>Monto exacto</PayKey>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <PayVal style={{ color: '#ff9000' }}>{formatCOP(paymentInfo.amount)}</PayVal>
+                    <PayVal style={{ color: '#4f8ef7' }}>{formatCOP(paymentInfo.amount)}</PayVal>
                     <CopyBtn onClick={() => copy(paymentInfo.amount)}>
                       <FiCopy size={12} /> Copiar
                     </CopyBtn>
@@ -595,7 +595,7 @@ export default function BookingStatusPage() {
             <div style={{ fontSize: 11, color: '#4a4757', marginBottom: 4 }}>
               Código de reserva
             </div>
-            <div style={{ fontSize: 13, color: '#666360', fontFamily: 'monospace', letterSpacing: 1 }}>
+            <div style={{ fontSize: 13, color: '#64748b', fontFamily: 'monospace', letterSpacing: 1 }}>
               {booking.reference}
             </div>
           </div>
@@ -609,7 +609,7 @@ export default function BookingStatusPage() {
                   <TimelineItem key={i}>
                     <div style={{ position: 'relative' }}>
                       <TlDot $color={statusDotColor(item.to_status)}>
-                        <FiCheck size={12} color="#1a1720" />
+                        <FiCheck size={12} color="#ffffff" />
                       </TlDot>
                       {i < booking.status_history.length - 1 && (
                         <TlLine className="tl-line" />

@@ -1,4 +1,4 @@
-import styled, { keyframes } from 'styled-components';
+﻿import styled, { keyframes } from 'styled-components';
 import { FiX } from 'react-icons/fi';
 import { FaStar, FaStarHalfAlt, FaRegStar } from 'react-icons/fa';
 import { useEffect } from 'react';
@@ -27,14 +27,14 @@ const Overlay = styled.div`
 `;
 
 const Modal = styled.div`
-  background: #1e1b28;
+  background: #ffffff;
   border-radius: 20px;
   width: 100%;
   max-width: 640px;
   max-height: 85vh;
   display: flex;
   flex-direction: column;
-  border: 1px solid rgba(255, 144, 0, 0.15);
+  border: 1px solid rgba(79,142,247, 0.15);
   box-shadow: 0 32px 80px rgba(0, 0, 0, 0.6);
   animation: ${slideUp} 0.3s ease;
   overflow: hidden;
@@ -54,7 +54,7 @@ const HeaderLeft = styled.div``;
 const ModalTitle = styled.h2`
   font-size: 22px;
   font-weight: 700;
-  color: #f4ede8;
+  color: #1e293b;
   margin-bottom: 8px;
 `;
 
@@ -63,8 +63,8 @@ const RatingRow = styled.div`
   align-items: center;
   gap: 10px;
 
-  .score { font-size: 32px; font-weight: 700; color: #ff9000; line-height: 1; }
-  .count { font-size: 13px; color: rgba(244,237,232,0.4); }
+  .score { font-size: 32px; font-weight: 700; color: #4f8ef7; line-height: 1; }
+  .count { font-size: 13px; color: rgba(15,23,42,0.35); }
 `;
 
 const CloseBtn = styled.button`
@@ -76,14 +76,14 @@ const CloseBtn = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(244,237,232,0.6);
+  color: rgba(15,23,42,0.55);
   cursor: pointer;
   transition: all 0.2s;
   flex-shrink: 0;
 
   &:hover {
-    background: rgba(255, 144, 0, 0.15);
-    color: #ff9000;
+    background: rgba(79,142,247, 0.15);
+    color: #4f8ef7;
   }
 `;
 
@@ -101,13 +101,13 @@ const BarRow = styled.div`
   align-items: center;
   gap: 10px;
   font-size: 12px;
-  color: rgba(244,237,232,0.5);
+  color: rgba(15,23,42,0.45);
 `;
 
 const Bar = styled.div`
   flex: 1;
   height: 6px;
-  background: rgba(255,255,255,0.08);
+  background: rgba(0,0,0,0.1);
   border-radius: 3px;
   overflow: hidden;
 
@@ -116,7 +116,7 @@ const Bar = styled.div`
     display: block;
     height: 100%;
     width: ${p => p.$pct}%;
-    background: linear-gradient(90deg, #ff9000, #ffb347);
+    background: linear-gradient(90deg, #4f8ef7, #93c5fd);
     border-radius: 3px;
     transition: width 0.6s ease;
   }
@@ -128,11 +128,11 @@ const ScrollArea = styled.div`
   flex: 1;
 
   scrollbar-width: thin;
-  scrollbar-color: rgba(255,144,0,0.3) transparent;
+  scrollbar-color: rgba(79,142,247,0.3) transparent;
 
   &::-webkit-scrollbar { width: 4px; }
   &::-webkit-scrollbar-track { background: transparent; }
-  &::-webkit-scrollbar-thumb { background: rgba(255,144,0,0.3); border-radius: 2px; }
+  &::-webkit-scrollbar-thumb { background: rgba(79,142,247,0.3); border-radius: 2px; }
 `;
 
 const ReviewItem = styled.div`
@@ -153,20 +153,20 @@ const Avatar = styled.div`
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #ff9000, #c87000);
+  background: linear-gradient(135deg, #4f8ef7, #2563eb);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 13px;
   font-weight: 700;
-  color: #1a1720;
+  color: #ffffff;
   flex-shrink: 0;
 `;
 
 const ReviewerName = styled.p`
   font-size: 15px;
   font-weight: 600;
-  color: #f4ede8;
+  color: #1e293b;
 `;
 
 const ReviewDate = styled.p`
@@ -183,16 +183,16 @@ const StarsRow = styled.div`
 const ReviewText = styled.p`
   font-size: 14px;
   line-height: 1.75;
-  color: rgba(244,237,232,0.65);
+  color: rgba(15,23,42,0.65);
 `;
 
 function Stars({ rating, size = 14 }) {
   return (
     <StarsRow>
       {[1, 2, 3, 4, 5].map(n => {
-        if (rating >= n) return <FaStar key={n} size={size} color="#ff9000" />;
-        if (rating >= n - 0.5) return <FaStarHalfAlt key={n} size={size} color="#ff9000" />;
-        return <FaRegStar key={n} size={size} color="#ff9000" />;
+        if (rating >= n) return <FaStar key={n} size={size} color="#4f8ef7" />;
+        if (rating >= n - 0.5) return <FaStarHalfAlt key={n} size={size} color="#4f8ef7" />;
+        return <FaRegStar key={n} size={size} color="#4f8ef7" />;
       })}
     </StarsRow>
   );

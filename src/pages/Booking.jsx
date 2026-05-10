@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { format, addDays, startOfDay } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -14,7 +14,7 @@ const Container = styled.div`
 const BackButton = styled.button`
   background: transparent;
   border: none;
-  color: #ff9000;
+  color: #4f8ef7;
   font-size: 14px;
   margin-bottom: 24px;
   display: flex;
@@ -28,7 +28,7 @@ const Title = styled.h2`
 `;
 
 const Subtitle = styled.p`
-  color: #666360;
+  color: #64748b;
   margin-bottom: 32px;
   font-size: 14px;
 `;
@@ -39,7 +39,7 @@ const Section = styled.div`
 
 const SectionTitle = styled.h3`
   font-size: 14px;
-  color: #999591;
+  color: #94a3b8;
   text-transform: uppercase;
   letter-spacing: 1px;
   margin-bottom: 16px;
@@ -53,8 +53,8 @@ const DaysRow = styled.div`
 `;
 
 const DayButton = styled.button`
-  background: ${p => p.$active ? '#ff9000' : '#3e3b47'};
-  color: ${p => p.$active ? '#312e38' : '#f4ede8'};
+  background: ${p => p.$active ? '#4f8ef7' : '#cbd5e1'};
+  color: ${p => p.$active ? '#ffffff' : '#1e293b'};
   border: none;
   border-radius: 8px;
   padding: 12px 16px;
@@ -66,7 +66,7 @@ const DayButton = styled.button`
   font-size: 13px;
   transition: all 0.2s;
 
-  &:hover { background: ${p => p.$active ? '#e08000' : '#504d5a'}; }
+  &:hover { background: ${p => p.$active ? '#2563eb' : '#e2e8f0'}; }
 
   strong { font-size: 20px; }
 `;
@@ -74,47 +74,47 @@ const DayButton = styled.button`
 const HourSelect = styled.select`
   width: 100%;
   padding: 14px 16px;
-  background: #232129;
-  border: 2px solid rgba(255,144,0,0.2);
+  background: #f8faff;
+  border: 2px solid rgba(79,142,247,0.2);
   border-radius: 10px;
-  color: #f4ede8;
+  color: #1e293b;
   font-size: 15px;
   cursor: pointer;
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ff9000' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234f8ef7' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 16px center;
 
-  &:focus { outline: none; border-color: #ff9000; }
+  &:focus { outline: none; border-color: #4f8ef7; }
 
-  option { background: #232129; }
-  option:disabled { color: rgba(244,237,232,0.3); }
+  option { background: #f8faff; }
+  option:disabled { color: rgba(15,23,42,0.25); }
 `;
 
 const ConfirmButton = styled.button`
   width: 100%;
   padding: 16px;
-  background: #ff9000;
+  background: #4f8ef7;
   border: none;
   border-radius: 10px;
-  color: #312e38;
+  color: #ffffff;
   font-size: 16px;
   font-weight: bold;
   transition: background 0.2s;
 
-  &:hover { background: #e08000; }
+  &:hover { background: #2563eb; }
   &:disabled { opacity: 0.5; cursor: not-allowed; }
 `;
 
 const SuccessBox = styled.div`
-  background: #3e3b47;
+  background: #cbd5e1;
   border-radius: 10px;
   padding: 32px;
   text-align: center;
   margin-top: 24px;
 
-  h3 { color: #ff9000; margin-bottom: 8px; }
-  p { color: #666360; font-size: 14px; margin-bottom: 24px; }
+  h3 { color: #4f8ef7; margin-bottom: 8px; }
+  p { color: #64748b; font-size: 14px; margin-bottom: 24px; }
 `;
 
 const HOURS = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19];

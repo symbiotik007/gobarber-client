@@ -4,8 +4,8 @@ export default createGlobalStyle`
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    background: #120f18;
-    color: #f4ede8;
+    background: #ffffff;
+    color: #1e293b;
     font-family: 'Inter', 'Roboto Slab', sans-serif;
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
