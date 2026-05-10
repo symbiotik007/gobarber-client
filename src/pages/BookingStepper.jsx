@@ -16,7 +16,7 @@ const Global = createGlobalStyle`
 `;
 
 const HOURS = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19];
-const STEPS = ['Servicio', 'Horario', 'Tus datos', 'Pago', 'Confirmación'];
+const STEPS = ['Barbero', 'Servicio', 'Horario', 'Tus datos', 'Pago', 'Confirmación'];
 
 /* ─── Animations ─────────────────────────────────────────── */
 const fadeIn = keyframes`from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); }`;
@@ -569,22 +569,82 @@ function copyToClipboard(text) {
    STEPS
 ═══════════════════════════════════════════════════════════ */
 
+/* ─── Step 0: Barber ─────────────────────────────────────── */
+function StepBarber({ preselectedId, onNext }) {
+  const [barbers, setBarbers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selected, setSelected] = useState(preselectedId ? Number(preselectedId) : null);
+
+  useEffect(() => {
+    api.get('/providers')
+      .then(r => {
+        setBarbers(r.data);
+        if (preselectedId && r.data.length > 0) setSelected(Number(preselectedId));
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  function handleNext() {
+    if (!selected) return;
+    const barber = barbers.find(b => b.id === selected);
+    onNext({ barberId: selected, barberName: barber?.name || '' });
+  }
+
+  return (
+    <Card>
+      <StepTitle>¿Con quién quieres tu cita?</StepTitle>
+      <StepSub>Elige tu barbero para ver los servicios disponibles.</StepSub>
+      <ServiceGrid>
+        {loading
+          ? [1, 2].map(i => <Skeleton key={i} $h="72px" />)
+          : barbers.map(b => (
+            <ServiceCard
+              key={b.id}
+              $active={selected === b.id}
+              onClick={() => setSelected(b.id)}
+            >
+              <ServiceInfo style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
+                <BarberAvatar style={{ width: 44, height: 44, fontSize: 16, flexShrink: 0 }}>
+                  {(b.avatar && b.avatar.url)
+                    ? <img src={b.avatar.url} alt={b.name} />
+                    : b.name[0].toUpperCase()
+                  }
+                </BarberAvatar>
+                <div>
+                  <ServiceName>{b.name}</ServiceName>
+                  <ServiceMeta><FiScissors size={11} style={{ marginRight: 4 }} />Barbero profesional</ServiceMeta>
+                </div>
+              </ServiceInfo>
+              {selected === b.id && <FiCheck size={20} color="#ff9000" style={{ flexShrink: 0 }} />}
+            </ServiceCard>
+          ))
+        }
+      </ServiceGrid>
+      <StickyFooter>
+        <CTABtn disabled={!selected} onClick={handleNext}>
+          Continuar
+        </CTABtn>
+      </StickyFooter>
+    </Card>
+  );
+}
+
 /* ─── Step 1: Service ────────────────────────────────────── */
-function StepService({ onNext }) {
+function StepService({ barberId, barberName, onNext, onBack }) {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null);
 
   useEffect(() => {
-    api.get('/services')
+    api.get('/services', { params: { barber_id: barberId } })
       .then(r => setServices(r.data))
       .finally(() => setLoading(false));
-  }, []);
+  }, [barberId]);
 
   return (
     <Card>
       <StepTitle>¿Qué servicio necesitas?</StepTitle>
-      <StepSub>Elige el servicio para tu próxima visita.</StepSub>
+      <StepSub>Servicios disponibles con <strong style={{ color: '#ff9000' }}>{barberName}</strong>.</StepSub>
       <ServiceGrid>
         {loading
           ? [1, 2, 3].map(i => <Skeleton key={i} $h="80px" />)
@@ -613,42 +673,28 @@ function StepService({ onNext }) {
         <CTABtn disabled={!selected} onClick={() => onNext(selected)}>
           Continuar
         </CTABtn>
+        <CTABtn $ghost onClick={onBack} style={{ marginTop: 8 }}>Atrás</CTABtn>
       </StickyFooter>
     </Card>
   );
 }
 
-const ANY_BARBER_ID = 0;
-
-/* ─── Step 2: Barber + Date + Hour ───────────────────────── */
-function StepSchedule({ preselectedBarberId, onNext, onBack }) {
-  const [barbers, setBarbers] = useState([]);
-  const [barberId, setBarberId] = useState(preselectedBarberId ? Number(preselectedBarberId) : ANY_BARBER_ID);
+/* ─── Step 2: Date + Hour (barber already chosen) ────────── */
+function StepSchedule({ barberId, barberName, onNext, onBack }) {
   const [selectedDate, setSelectedDate] = useState(startOfDay(addDays(new Date(), 1)));
   const [selectedHour, setSelectedHour] = useState(null);
   const [occupied, setOccupied] = useState(new Set());
   const [availableHours, setAvailableHours] = useState(HOURS);
   const [dayClosed, setDayClosed] = useState(false);
-  const [loadingBarbers, setLoadingBarbers] = useState(true);
   const [loadingSlots, setLoadingSlots] = useState(false);
 
   const days = Array.from({ length: 10 }, (_, i) => addDays(startOfDay(new Date()), i + 1));
 
   useEffect(() => {
-    api.get('/providers')
-      .then(r => {
-        setBarbers(r.data);
-        if (preselectedBarberId && barberId === null) setBarberId(Number(preselectedBarberId));
-      })
-      .finally(() => setLoadingBarbers(false));
-  }, []);
-
-  useEffect(() => {
     setLoadingSlots(true);
     setSelectedHour(null);
     const dateStr = format(selectedDate, 'yyyy-MM-dd');
-    const id = barberId === ANY_BARBER_ID ? 0 : barberId;
-    api.get(`/bookings/availability/${id}`, { params: { date: dateStr } })
+    api.get(`/bookings/availability/${barberId}`, { params: { date: dateStr } })
       .then(r => {
         setOccupied(new Set(r.data.occupied.map(d => new Date(d).getHours())));
         setAvailableHours(r.data.available_hours && r.data.available_hours.length ? r.data.available_hours : HOURS);
@@ -658,55 +704,17 @@ function StepSchedule({ preselectedBarberId, onNext, onBack }) {
       .finally(() => setLoadingSlots(false));
   }, [barberId, selectedDate]);
 
-  function isOccupied(hour) {
-    return occupied.has(hour);
-  }
-
   function handleNext() {
     if (selectedHour === null) return;
     const date = new Date(selectedDate);
     date.setHours(selectedHour, 0, 0, 0);
-    const barberName = barberId === ANY_BARBER_ID
-      ? 'Cualquier barbero disponible'
-      : (barbers.find(b => b.id === barberId) || {}).name;
     onNext({ barberId, date: date.toISOString(), barberName });
   }
 
   return (
     <Card>
       <StepTitle>Elige tu horario</StepTitle>
-      <StepSub>Selecciona el barbero, día y hora disponible.</StepSub>
-
-      {/* Barbero */}
-      <Label><FiScissors /> Barbero</Label>
-      <BarberGrid>
-        {loadingBarbers
-          ? [1, 2, 3].map(i => <Skeleton key={i} $h="60px" $w="140px" style={{ display: 'inline-block' }} />)
-          : (
-            <>
-              <BarberBtn
-                $active={barberId === ANY_BARBER_ID}
-                onClick={() => { setBarberId(ANY_BARBER_ID); setSelectedHour(null); }}
-                style={{ fontStyle: 'italic' }}
-              >
-                <BarberAvatar>✦</BarberAvatar>
-                Sin preferencia
-              </BarberBtn>
-              {barbers.map(b => (
-                <BarberBtn key={b.id} $active={barberId === b.id} onClick={() => { setBarberId(b.id); setSelectedHour(null); }}>
-                  <BarberAvatar>
-                    {(b.avatar && b.avatar.url)
-                      ? <img src={b.avatar.url} alt={b.name} />
-                      : b.name[0].toUpperCase()
-                    }
-                  </BarberAvatar>
-                  {b.name}
-                </BarberBtn>
-              ))}
-            </>
-          )
-        }
-      </BarberGrid>
+      <StepSub>Selecciona el día y hora con <strong style={{ color: '#ff9000' }}>{barberName}</strong>.</StepSub>
 
       {/* Fecha */}
       <Label><FiCalendar /> Fecha</Label>
@@ -725,34 +733,32 @@ function StepSchedule({ preselectedBarberId, onNext, onBack }) {
       </DaysRow>
 
       {/* Hora */}
-      <>
-        <Label style={{ marginTop: 8 }}><FiClock /> Hora disponible</Label>
-          {loadingSlots
-            ? <Skeleton $h="120px" />
-            : dayClosed
-              ? (
-                <div style={{ padding: '20px', textAlign: 'center', color: '#666360', background: '#232129', borderRadius: 12, fontSize: 14 }}>
-                  <FiAlertCircle size={20} style={{ display: 'block', margin: '0 auto 8px', color: '#ff9000' }} />
-                  El local está cerrado este día.
-                </div>
-              )
-              : (
-                <HoursGrid>
-                  {availableHours.map(h => (
-                    <HourBtn
-                      key={h}
-                      $active={selectedHour === h}
-                      $disabled={isOccupied(h)}
-                      disabled={isOccupied(h)}
-                      onClick={() => setSelectedHour(h)}
-                    >
-                      {String(h).padStart(2, '0')}:00
-                    </HourBtn>
-                  ))}
-                </HoursGrid>
-              )
-          }
-      </>
+      <Label style={{ marginTop: 8 }}><FiClock /> Hora disponible</Label>
+      {loadingSlots
+        ? <Skeleton $h="120px" />
+        : dayClosed
+          ? (
+            <div style={{ padding: '20px', textAlign: 'center', color: '#666360', background: '#232129', borderRadius: 12, fontSize: 14 }}>
+              <FiAlertCircle size={20} style={{ display: 'block', margin: '0 auto 8px', color: '#ff9000' }} />
+              El local está cerrado este día.
+            </div>
+          )
+          : (
+            <HoursGrid>
+              {availableHours.map(h => (
+                <HourBtn
+                  key={h}
+                  $active={selectedHour === h}
+                  $disabled={occupied.has(h)}
+                  disabled={occupied.has(h)}
+                  onClick={() => setSelectedHour(h)}
+                >
+                  {String(h).padStart(2, '0')}:00
+                </HourBtn>
+              ))}
+            </HoursGrid>
+          )
+      }
 
       <StickyFooter>
         <CTABtn disabled={selectedHour === null || dayClosed} onClick={handleNext}>
@@ -1143,6 +1149,7 @@ export default function BookingStepper() {
   const preselectedBarberId = searchParams.get('barber');
 
   const [step, setStep] = useState(0);
+  const [barber, setBarber] = useState(null);   // { barberId, barberName }
   const [service, setService] = useState(null);
   const [schedule, setSchedule] = useState(null);
   const [customer, setCustomer] = useState(null);
@@ -1150,7 +1157,7 @@ export default function BookingStepper() {
 
   useEffect(() => {
     if (step === 0) track(EVENTS.BOOKING_STARTED);
-    if (step === 3 && service && schedule) track(EVENTS.BOOKING_PAYMENT_SHOWN, {
+    if (step === 4 && service && schedule) track(EVENTS.BOOKING_PAYMENT_SHOWN, {
       serviceId: service.id,
       serviceName: service.name,
       barberId: schedule.barberId,
@@ -1202,28 +1209,43 @@ export default function BookingStepper() {
             style={{ width: '100%' }}
           >
             {step === 0 && (
-              <StepService
-                onNext={s => {
+              <StepBarber
+                preselectedId={preselectedBarberId}
+                onNext={b => {
                   haptic([20]);
-                  track(EVENTS.BOOKING_SLOT_SELECTED, { serviceId: s.id, serviceName: s.name });
-                  setService(s);
+                  track(EVENTS.BOOKING_STARTED, { barberId: b.barberId, barberName: b.barberName });
+                  setBarber(b);
                   setStep(1);
                 }}
               />
             )}
-            {step === 1 && (
-              <StepSchedule
-                preselectedBarberId={preselectedBarberId}
+            {step === 1 && barber && (
+              <StepService
+                barberId={barber.barberId}
+                barberName={barber.barberName}
                 onNext={s => {
                   haptic([20]);
-                  track(EVENTS.BOOKING_SLOT_SELECTED, { barberId: s.barberId, date: s.date });
-                  setSchedule(s);
+                  track(EVENTS.BOOKING_SLOT_SELECTED, { serviceId: s.id, serviceName: s.name });
+                  setService(s);
                   setStep(2);
                 }}
                 onBack={handleBack}
               />
             )}
-            {step === 2 && (
+            {step === 2 && barber && (
+              <StepSchedule
+                barberId={barber.barberId}
+                barberName={barber.barberName}
+                onNext={s => {
+                  haptic([20]);
+                  track(EVENTS.BOOKING_SLOT_SELECTED, { barberId: s.barberId, date: s.date });
+                  setSchedule(s);
+                  setStep(3);
+                }}
+                onBack={handleBack}
+              />
+            )}
+            {step === 3 && (
               <StepCustomer
                 service={service}
                 schedule={schedule}
@@ -1231,12 +1253,12 @@ export default function BookingStepper() {
                   haptic([20]);
                   track(EVENTS.BOOKING_CUSTOMER_FILLED);
                   setCustomer(c);
-                  setStep(3);
+                  setStep(4);
                 }}
                 onBack={handleBack}
               />
             )}
-            {step === 3 && (
+            {step === 4 && (
               <StepPayment
                 service={service}
                 schedule={schedule}
@@ -1245,12 +1267,12 @@ export default function BookingStepper() {
                   haptic([30, 30, 60]);
                   track(EVENTS.BOOKING_CREATED, { reference: ref });
                   setBookingRef(ref);
-                  setStep(4);
+                  setStep(5);
                 }}
-                onBack={() => setStep(1)}
+                onBack={() => setStep(2)}
               />
             )}
-            {step === 4 && (
+            {step === 5 && (
               <StepStatus reference={bookingRef} />
             )}
           </motion.div>
