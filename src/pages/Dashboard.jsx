@@ -15,15 +15,15 @@ const shimmer = keyframes`
 
 const Page = styled.div`
   min-height: 100vh;
-  background: #1a1720;
-  color: #f4ede8;
+  background: #080d1c;
+  color: #f0f6ff;
   font-family: 'Segoe UI', sans-serif;
 `;
 
 const TopBar = styled.header`
   width: 100%;
-  background: #232129;
-  border-bottom: 1px solid #2d2b35;
+  background: #0d1226;
+  border-bottom: 1px solid #162040;
   padding: 0 24px;
   height: 60px;
   display: flex;
@@ -34,7 +34,7 @@ const TopBar = styled.header`
 const Logo = styled.span`
   font-size: 18px;
   font-weight: 700;
-  color: #ff9000;
+  color: #4f8ef7;
   letter-spacing: 1px;
 `;
 
@@ -42,19 +42,19 @@ const UserRow = styled.div`
   display: flex;
   align-items: center;
   gap: 16px;
-  span { font-size: 13px; color: #999591; }
+  span { font-size: 13px; color: #6b7db3; }
 `;
 
 const SignOutBtn = styled.button`
   background: none;
-  border: 1px solid #3e3b47;
-  color: #999591;
+  border: 1px solid #1e2d50;
+  color: #6b7db3;
   padding: 6px 14px;
   border-radius: 8px;
   font-size: 13px;
   cursor: pointer;
   transition: all 0.2s;
-  &:hover { border-color: #ff9000; color: #ff9000; }
+  &:hover { border-color: #4f8ef7; color: #4f8ef7; }
 `;
 
 const Container = styled.div`
@@ -67,10 +67,10 @@ const Container = styled.div`
 const NewBookingBtn = styled.button`
   width: 100%;
   padding: 16px;
-  background: linear-gradient(135deg, #ff9000, #e08000);
+  background: linear-gradient(135deg, #4f8ef7, #2563eb);
   border: none;
   border-radius: 14px;
-  color: #1a1720;
+  color: #080d1c;
   font-size: 16px;
   font-weight: 700;
   cursor: pointer;
@@ -80,7 +80,7 @@ const NewBookingBtn = styled.button`
   gap: 10px;
   margin-bottom: 40px;
   transition: all 0.2s;
-  &:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(255,144,0,0.3); }
+  &:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(79,142,247,0.3); }
 `;
 
 const Section = styled.div`
@@ -97,12 +97,12 @@ const SectionHeader = styled.div`
 const SectionTitle = styled.h2`
   font-size: 16px;
   font-weight: 600;
-  color: #f4ede8;
+  color: #f0f6ff;
 `;
 
 const Badge = styled.span`
-  background: ${p => p.$color || '#2d2b35'};
-  color: ${p => p.$text || '#999591'};
+  background: ${p => p.$color || '#162040'};
+  color: ${p => p.$text || '#6b7db3'};
   font-size: 11px;
   font-weight: 700;
   padding: 3px 8px;
@@ -118,7 +118,7 @@ const Dot = styled.div`
 `;
 
 const BookingCard = styled.div`
-  background: #232129;
+  background: #0d1226;
   border-radius: 14px;
   padding: 18px 20px;
   margin-bottom: 10px;
@@ -128,7 +128,7 @@ const BookingCard = styled.div`
   cursor: ${p => p.$clickable ? 'pointer' : 'default'};
   transition: all 0.2s;
   border: 1px solid transparent;
-  &:hover { border-color: ${p => p.$clickable ? 'rgba(255,144,0,0.3)' : 'transparent'}; }
+  &:hover { border-color: ${p => p.$clickable ? 'rgba(79,142,247,0.3)' : 'transparent'}; }
 `;
 
 const BookingIcon = styled.div`
@@ -150,7 +150,7 @@ const BookingInfo = styled.div`
 const BookingService = styled.div`
   font-size: 15px;
   font-weight: 600;
-  color: #f4ede8;
+  color: #f0f6ff;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -158,7 +158,7 @@ const BookingService = styled.div`
 
 const BookingMeta = styled.div`
   font-size: 13px;
-  color: #666360;
+  color: #4a5780;
   margin-top: 3px;
   display: flex;
   flex-wrap: wrap;
@@ -185,14 +185,14 @@ const StatusChip = styled.span`
 const Empty = styled.div`
   text-align: center;
   padding: 28px;
-  color: #4a4757;
+  color: #2a3660;
   font-size: 14px;
-  background: #1e1c26;
+  background: #0a1020;
   border-radius: 14px;
 `;
 
 const SkeletonCard = styled.div`
-  background: linear-gradient(90deg, #232129 25%, #2a2730 50%, #232129 75%);
+  background: linear-gradient(90deg, #0d1226 25%, #2a2730 50%, #0d1226 75%);
   background-size: 800px 100%;
   animation: ${shimmer} 1.4s ease infinite;
   border-radius: 14px;
@@ -202,11 +202,11 @@ const SkeletonCard = styled.div`
 
 /* ─── Helpers ─────────────────────────────────────────────── */
 const STATUS_META = {
-  PENDING_PAYMENT: { label: 'Pendiente de pago', bg: 'rgba(255,144,0,0.12)', color: '#ff9000', dot: '#ff9000', icon: FiClock, iconBg: 'rgba(255,144,0,0.12)' },
+  PENDING_PAYMENT: { label: 'Pendiente de pago', bg: 'rgba(79,142,247,0.12)', color: '#4f8ef7', dot: '#4f8ef7', icon: FiClock, iconBg: 'rgba(79,142,247,0.12)' },
   CONFIRMED:       { label: 'Confirmada',        bg: 'rgba(76,175,80,0.12)',  color: '#4caf50', dot: '#4caf50', icon: FiCheck, iconBg: 'rgba(76,175,80,0.12)' },
   COMPLETED:       { label: 'Completada',        bg: 'rgba(99,102,241,0.12)', color: '#818cf8', dot: '#818cf8', icon: FiCheck, iconBg: 'rgba(99,102,241,0.12)' },
   CANCELLED:       { label: 'Cancelada',         bg: 'rgba(224,85,85,0.12)', color: '#e05555', dot: '#e05555', icon: FiX,    iconBg: 'rgba(224,85,85,0.12)' },
-  EXPIRED:         { label: 'Expirada',          bg: '#2d2b35',              color: '#666360', dot: '#666360', icon: FiAlertCircle, iconBg: '#2d2b35' },
+  EXPIRED:         { label: 'Expirada',          bg: '#162040',              color: '#4a5780', dot: '#4a5780', icon: FiAlertCircle, iconBg: '#162040' },
   NO_SHOW:         { label: 'No asistió',        bg: 'rgba(224,85,85,0.12)', color: '#e05555', dot: '#e05555', icon: FiX,    iconBg: 'rgba(224,85,85,0.12)' },
 };
 
@@ -238,9 +238,9 @@ function BookingItem({ booking, clickable = true }) {
       </BookingInfo>
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6, flexShrink: 0 }}>
         <StatusChip $bg={meta.bg} $color={meta.color}>{meta.label}</StatusChip>
-        <span style={{ fontSize: 13, color: '#999591' }}>{fmt(booking.deposit_amount)}</span>
+        <span style={{ fontSize: 13, color: '#6b7db3' }}>{fmt(booking.deposit_amount)}</span>
       </div>
-      {clickable && <FiChevronRight size={16} color="#3e3b47" style={{ flexShrink: 0 }} />}
+      {clickable && <FiChevronRight size={16} color="#1e2d50" style={{ flexShrink: 0 }} />}
     </BookingCard>
   );
 }
@@ -280,9 +280,9 @@ export default function Dashboard() {
         {/* Pendientes de pago */}
         <Section>
           <SectionHeader>
-            <Dot $color="#ff9000" />
+            <Dot $color="#4f8ef7" />
             <SectionTitle>Reservas pendientes</SectionTitle>
-            {pending.length > 0 && <Badge $color="rgba(255,144,0,0.15)" $text="#ff9000">{pending.length}</Badge>}
+            {pending.length > 0 && <Badge $color="rgba(79,142,247,0.15)" $text="#4f8ef7">{pending.length}</Badge>}
           </SectionHeader>
           {loading
             ? <><SkeletonCard /><SkeletonCard /></>
@@ -310,7 +310,7 @@ export default function Dashboard() {
         {/* Anteriores */}
         <Section>
           <SectionHeader>
-            <Dot $color="#4a4757" />
+            <Dot $color="#2a3660" />
             <SectionTitle>Reservas anteriores</SectionTitle>
             {past.length > 0 && <Badge>{past.length}</Badge>}
           </SectionHeader>

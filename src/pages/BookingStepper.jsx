@@ -10,12 +10,23 @@ import api from '../services/api';
 import track, { EVENTS } from '../services/analytics';
 import { haptic, shareBooking } from '../services/mobile';
 
+/* ─── Barber photo map ───────────────────────────────────── */
+const BARBER_PHOTOS = {
+  5: '/Luis.webp',
+  6: '/Jhoymar-Jojoa.webp',
+};
+
+const BARBER_SPECIALTY = {
+  5: 'Cortes clásicos & modernos',
+  6: 'Diseños & perfilado',
+};
+
 /* ─── Global ─────────────────────────────────────────────── */
 const Global = createGlobalStyle`
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    background: #0f0d14;
-    color: #f4ede8;
+    background: #080d1c;
+    color: #f0f6ff;
     font-family: 'Segoe UI', system-ui, sans-serif;
   }
 `;
@@ -28,15 +39,15 @@ const fadeIn    = keyframes`from { opacity: 0; transform: translateY(16px); } to
 const spin      = keyframes`from { transform: rotate(0deg); } to { transform: rotate(360deg); }`;
 const pulse     = keyframes`0%,100% { opacity: 1; } 50% { opacity: 0.4; }`;
 const shimmer   = keyframes`0% { background-position: -600px 0; } 100% { background-position: 600px 0; }`;
-const glowPulse = keyframes`0%,100% { box-shadow: 0 0 20px rgba(255,144,0,0.15); } 50% { box-shadow: 0 0 40px rgba(255,144,0,0.35); }`;
+const glowPulse = keyframes`0%,100% { box-shadow: 0 0 20px rgba(79,142,247,0.15); } 50% { box-shadow: 0 0 40px rgba(79,142,247,0.35); }`;
 const floatUp   = keyframes`0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); }`;
 
 /* ─── Layout ─────────────────────────────────────────────── */
 const Page = styled.div`
   min-height: 100vh;
   background:
-    radial-gradient(ellipse 80% 40% at 50% 0%, rgba(255,144,0,0.07) 0%, transparent 70%),
-    #0f0d14;
+    radial-gradient(ellipse 80% 40% at 50% 0%, rgba(79,142,247,0.08) 0%, transparent 70%),
+    #080d1c;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -47,7 +58,7 @@ const Page = styled.div`
     position: fixed;
     inset: 0;
     background-image:
-      radial-gradient(circle, rgba(255,144,0,0.04) 1px, transparent 1px);
+      radial-gradient(circle, rgba(79,142,247,0.04) 1px, transparent 1px);
     background-size: 28px 28px;
     pointer-events: none;
     z-index: 0;
@@ -69,7 +80,7 @@ const TopBar = styled.div`
 const BackBtn = styled.button`
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.08);
-  color: #999591;
+  color: #6b7db3;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -78,13 +89,13 @@ const BackBtn = styled.button`
   padding: 8px 12px;
   border-radius: 10px;
   transition: all 0.2s;
-  &:hover { color: #ff9000; border-color: rgba(255,144,0,0.4); background: rgba(255,144,0,0.06); }
+  &:hover { color: #4f8ef7; border-color: rgba(79,142,247,0.4); background: rgba(79,142,247,0.06); }
 `;
 
 const Logo = styled.span`
   font-size: 20px;
   font-weight: 800;
-  background: linear-gradient(135deg, #ff9000, #ffb347);
+  background: linear-gradient(135deg, #4f8ef7, #93c5fd);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -119,17 +130,17 @@ const StepDot = styled.div`
   font-weight: 700;
   flex-shrink: 0;
   transition: all 0.35s;
-  background: ${p => p.$done ? 'linear-gradient(135deg,#ff9000,#e07000)' : p.$active ? 'linear-gradient(135deg,#ff9000,#ffb347)' : 'rgba(255,255,255,0.04)'};
-  color: ${p => (p.$done || p.$active) ? '#0f0d14' : '#555'};
-  border: 1.5px solid ${p => p.$done ? '#e07000' : p.$active ? '#ff9000' : 'rgba(255,255,255,0.08)'};
-  box-shadow: ${p => p.$active ? '0 0 16px rgba(255,144,0,0.5)' : 'none'};
+  background: ${p => p.$done ? 'linear-gradient(135deg,#4f8ef7,#2563eb)' : p.$active ? 'linear-gradient(135deg,#4f8ef7,#7ab0ff)' : 'rgba(255,255,255,0.04)'};
+  color: ${p => (p.$done || p.$active) ? '#fff' : '#555'};
+  border: 1.5px solid ${p => p.$done ? '#2563eb' : p.$active ? '#4f8ef7' : 'rgba(255,255,255,0.08)'};
+  box-shadow: ${p => p.$active ? '0 0 16px rgba(79,142,247,0.5)' : 'none'};
 `;
 
 const StepLine = styled.div`
   flex: 1;
   height: 2px;
   background: ${p => p.$done
-    ? 'linear-gradient(90deg,#ff9000,#e07000)'
+    ? 'linear-gradient(90deg,#4f8ef7,#2563eb)'
     : 'rgba(255,255,255,0.06)'};
   transition: background 0.35s;
 `;
@@ -142,7 +153,7 @@ const StepLabels = styled.div`
 
 const StepLabel = styled.span`
   font-size: 9px;
-  color: ${p => p.$active ? '#ff9000' : p.$done ? '#666360' : '#333'};
+  color: ${p => p.$active ? '#4f8ef7' : p.$done ? '#6b7db3' : '#333'};
   font-weight: ${p => p.$active ? '700' : '400'};
   text-align: center;
   width: 60px;
@@ -167,21 +178,21 @@ const StepTitle = styled.h2`
   font-size: 24px;
   font-weight: 800;
   margin-bottom: 6px;
-  color: #f4ede8;
+  color: #f0f6ff;
   letter-spacing: -0.3px;
 `;
 
 const StepSub = styled.p`
   font-size: 14px;
-  color: #555061;
+  color: #4a5780;
   margin-bottom: 28px;
   line-height: 1.6;
 `;
 
 /* ─── Hero banner (Step 0) ───────────────────────────────── */
 const HeroBanner = styled.div`
-  background: linear-gradient(135deg, rgba(255,144,0,0.08) 0%, rgba(255,100,0,0.04) 100%);
-  border: 1px solid rgba(255,144,0,0.12);
+  background: linear-gradient(135deg, rgba(79,142,247,0.08) 0%, rgba(37,99,235,0.04) 100%);
+  border: 1px solid rgba(79,142,247,0.15);
   border-radius: 20px;
   padding: 28px 24px;
   margin-bottom: 28px;
@@ -207,13 +218,13 @@ const HeroText = styled.div``;
 const HeroTitle = styled.div`
   font-size: 17px;
   font-weight: 700;
-  color: #f4ede8;
+  color: #f0f6ff;
   margin-bottom: 4px;
 `;
 
 const HeroSub = styled.div`
   font-size: 13px;
-  color: #666360;
+  color: #6b7db3;
   line-height: 1.5;
 `;
 
@@ -221,14 +232,14 @@ const HeroIconWrap = styled.div`
   width: 60px;
   height: 60px;
   border-radius: 18px;
-  background: linear-gradient(135deg, rgba(255,144,0,0.2), rgba(255,100,0,0.1));
-  border: 1px solid rgba(255,144,0,0.25);
+  background: linear-gradient(135deg, rgba(79,142,247,0.2), rgba(37,99,235,0.1));
+  border: 1px solid rgba(79,142,247,0.25);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   animation: ${floatUp} 3s ease-in-out infinite;
-  color: #ff9000;
+  color: #4f8ef7;
 `;
 
 /* ─── Services ───────────────────────────────────────────── */
@@ -240,9 +251,9 @@ const ServiceGrid = styled.div`
 
 const ServiceCard = styled.button`
   background: ${p => p.$active
-    ? 'linear-gradient(135deg, rgba(255,144,0,0.1), rgba(255,100,0,0.06))'
+    ? 'linear-gradient(135deg, rgba(79,142,247,0.1), rgba(37,99,235,0.06))'
     : 'rgba(255,255,255,0.025)'};
-  border: 1.5px solid ${p => p.$active ? '#ff9000' : 'rgba(255,255,255,0.06)'};
+  border: 1.5px solid ${p => p.$active ? '#4f8ef7' : 'rgba(255,255,255,0.06)'};
   border-radius: 16px;
   padding: 18px 20px;
   display: flex;
@@ -251,10 +262,10 @@ const ServiceCard = styled.button`
   cursor: pointer;
   text-align: left;
   transition: all 0.22s;
-  box-shadow: ${p => p.$active ? '0 4px 24px rgba(255,144,0,0.15)' : 'none'};
+  box-shadow: ${p => p.$active ? '0 4px 24px rgba(79,142,247,0.15)' : 'none'};
   &:hover {
-    border-color: rgba(255,144,0,0.5);
-    background: rgba(255,144,0,0.05);
+    border-color: rgba(79,142,247,0.5);
+    background: rgba(79,142,247,0.05);
     transform: translateY(-1px);
   }
 `;
@@ -268,12 +279,12 @@ const ServiceInfo = styled.div`
 const ServiceName = styled.span`
   font-size: 15px;
   font-weight: 700;
-  color: #f4ede8;
+  color: #f0f6ff;
 `;
 
 const ServiceMeta = styled.span`
   font-size: 12px;
-  color: #555061;
+  color: #4a5780;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -287,7 +298,7 @@ const ServicePrice = styled.div`
 const PriceTotal = styled.div`
   font-size: 19px;
   font-weight: 800;
-  background: linear-gradient(135deg, #ff9000, #ffb347);
+  background: linear-gradient(135deg, #4f8ef7, #93c5fd);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -303,12 +314,12 @@ const ServiceIconWrap = styled.div`
   width: 38px;
   height: 38px;
   border-radius: 12px;
-  background: rgba(255,144,0,0.08);
-  border: 1px solid rgba(255,144,0,0.15);
+  background: rgba(79,142,247,0.08);
+  border: 1px solid rgba(79,142,247,0.15);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ff9000;
+  color: #4f8ef7;
   flex-shrink: 0;
   margin-right: 14px;
 `;
@@ -329,44 +340,106 @@ const Skeleton = styled.div`
 
 /* ─── Barbers ─────────────────────────────────────────────── */
 const BarberGrid = styled.div`
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
   margin-bottom: 28px;
+  @media (max-width: 480px) { grid-template-columns: 1fr; }
 `;
 
-const BarberBtn = styled.button`
+const BarberCard = styled.button`
   background: ${p => p.$active
-    ? 'linear-gradient(135deg, rgba(255,144,0,0.12), rgba(255,100,0,0.06))'
+    ? 'linear-gradient(160deg, rgba(79,142,247,0.12), rgba(37,99,235,0.06))'
     : 'rgba(255,255,255,0.025)'};
-  border: 1.5px solid ${p => p.$active ? '#ff9000' : 'rgba(255,255,255,0.06)'};
-  border-radius: 14px;
-  padding: 14px 20px;
+  border: 1.5px solid ${p => p.$active ? '#4f8ef7' : 'rgba(255,255,255,0.07)'};
+  border-radius: 20px;
+  padding: 0;
   cursor: pointer;
+  transition: all 0.25s;
+  overflow: hidden;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  box-shadow: ${p => p.$active ? '0 6px 32px rgba(79,142,247,0.2)' : 'none'};
+  &:hover {
+    border-color: rgba(79,142,247,0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(79,142,247,0.15);
+  }
+`;
+
+const BarberPhoto = styled.div`
+  width: 100%;
+  aspect-ratio: 3/4;
+  overflow: hidden;
+  position: relative;
+  background: linear-gradient(180deg, rgba(79,142,247,0.1), rgba(8,13,28,0.8));
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+  }
+`;
+
+const BarberPhotoFallback = styled.div`
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
-  gap: 12px;
-  transition: all 0.22s;
-  color: #f4ede8;
-  font-size: 14px;
-  font-weight: ${p => p.$active ? '700' : '400'};
-  box-shadow: ${p => p.$active ? '0 4px 20px rgba(255,144,0,0.15)' : 'none'};
-  &:hover { border-color: rgba(255,144,0,0.5); transform: translateY(-1px); }
+  justify-content: center;
+  background: linear-gradient(135deg, #4f8ef7, #2563eb);
+  font-size: 48px;
+  font-weight: 800;
+  color: #fff;
 `;
 
+const BarberSelectedBadge = styled.div`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #4f8ef7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 12px rgba(79,142,247,0.5);
+`;
+
+const BarberInfo = styled.div`
+  padding: 14px 16px;
+  background: rgba(8,13,28,0.8);
+`;
+
+const BarberName = styled.div`
+  font-size: 15px;
+  font-weight: 700;
+  color: #f0f6ff;
+  margin-bottom: 3px;
+`;
+
+const BarberSpec = styled.div`
+  font-size: 12px;
+  color: #6b7db3;
+`;
+
+/* ─── legacy avatar (for fallback in service step) ──────── */
 const BarberAvatar = styled.div`
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #ff9000, #e07000);
-  color: #0f0d14;
+  background: linear-gradient(135deg, #4f8ef7, #2563eb);
+  color: #fff;
   font-weight: 800;
   font-size: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  box-shadow: 0 2px 12px rgba(255,144,0,0.3);
+  box-shadow: 0 2px 12px rgba(79,142,247,0.3);
   img { width: 100%; height: 100%; object-fit: cover; }
 `;
 
@@ -383,9 +456,9 @@ const DaysRow = styled.div`
 
 const DayBtn = styled.button`
   background: ${p => p.$active
-    ? 'linear-gradient(135deg, #ff9000, #e07000)'
+    ? 'linear-gradient(135deg, #4f8ef7, #2563eb)'
     : 'rgba(255,255,255,0.03)'};
-  color: ${p => p.$active ? '#0f0d14' : '#f4ede8'};
+  color: ${p => p.$active ? '#fff' : '#f0f6ff'};
   border: 1.5px solid ${p => p.$active ? 'transparent' : 'rgba(255,255,255,0.06)'};
   border-radius: 14px;
   padding: 12px 14px;
@@ -397,8 +470,8 @@ const DayBtn = styled.button`
   cursor: pointer;
   transition: all 0.22s;
   flex-shrink: 0;
-  box-shadow: ${p => p.$active ? '0 4px 16px rgba(255,144,0,0.3)' : 'none'};
-  &:hover { border-color: rgba(255,144,0,0.5); transform: translateY(-1px); }
+  box-shadow: ${p => p.$active ? '0 4px 16px rgba(79,142,247,0.3)' : 'none'};
+  &:hover { border-color: rgba(79,142,247,0.5); transform: translateY(-1px); }
   strong { font-size: 22px; font-weight: 800; line-height: 1; }
   span { font-size: 10px; text-transform: capitalize; opacity: ${p => p.$active ? 0.8 : 0.5}; }
 `;
@@ -413,9 +486,9 @@ const HoursGrid = styled.div`
 
 const HourBtn = styled.button`
   background: ${p => p.$active
-    ? 'linear-gradient(135deg, #ff9000, #e07000)'
+    ? 'linear-gradient(135deg, #4f8ef7, #2563eb)'
     : p.$disabled ? 'rgba(255,255,255,0.01)' : 'rgba(255,255,255,0.04)'};
-  color: ${p => p.$active ? '#0f0d14' : p.$disabled ? '#2a2830' : '#ccc8c4'};
+  color: ${p => p.$active ? '#fff' : p.$disabled ? '#1e2a4a' : '#ccd4f0'};
   border: 1.5px solid ${p => p.$active ? 'transparent' : p.$disabled ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.07)'};
   border-radius: 12px;
   padding: 13px 8px;
@@ -423,8 +496,8 @@ const HourBtn = styled.button`
   font-weight: ${p => p.$active ? '700' : '500'};
   cursor: ${p => p.$disabled ? 'not-allowed' : 'pointer'};
   transition: all 0.2s;
-  box-shadow: ${p => p.$active ? '0 3px 12px rgba(255,144,0,0.3)' : 'none'};
-  &:hover:not(:disabled) { border-color: rgba(255,144,0,0.5); transform: translateY(-1px); }
+  box-shadow: ${p => p.$active ? '0 3px 12px rgba(79,142,247,0.3)' : 'none'};
+  &:hover:not(:disabled) { border-color: rgba(79,142,247,0.5); transform: translateY(-1px); }
 `;
 
 /* ─── Form ───────────────────────────────────────────────── */
@@ -437,12 +510,12 @@ const Label = styled.label`
   align-items: center;
   gap: 8px;
   font-size: 12px;
-  color: #666360;
+  color: #6b7db3;
   margin-bottom: 8px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  svg { color: #ff9000; }
+  svg { color: #4f8ef7; }
 `;
 
 const Input = styled.input`
@@ -451,16 +524,16 @@ const Input = styled.input`
   background: rgba(255,255,255,0.04);
   border: 1.5px solid ${p => p.$error ? '#e05555' : 'rgba(255,255,255,0.08)'};
   border-radius: 12px;
-  color: #f4ede8;
+  color: #f0f6ff;
   font-size: 15px;
   transition: all 0.2s;
   &:focus {
     outline: none;
-    border-color: #ff9000;
-    background: rgba(255,144,0,0.04);
-    box-shadow: 0 0 0 3px rgba(255,144,0,0.08);
+    border-color: #4f8ef7;
+    background: rgba(79,142,247,0.04);
+    box-shadow: 0 0 0 3px rgba(79,142,247,0.08);
   }
-  &::placeholder { color: #2e2c38; }
+  &::placeholder { color: #1a2140; }
 `;
 
 const FieldError = styled.span`
@@ -487,16 +560,16 @@ const SummaryRow = styled.div`
   justify-content: space-between;
   align-items: center;
   font-size: 14px;
-  color: ${p => p.$highlight ? '#ff9000' : '#f4ede8'};
+  color: ${p => p.$highlight ? '#4f8ef7' : '#f0f6ff'};
   font-weight: ${p => p.$highlight ? '700' : '400'};
-  span:first-child { color: #444; font-size: 13px; }
+  span:first-child { color: #4a5780; font-size: 13px; }
   ${p => p.$highlight && 'border-top: 1px solid rgba(255,255,255,0.06); padding-top: 12px;'}
 `;
 
 /* ─── Payment box ────────────────────────────────────────── */
 const PaymentBox = styled.div`
-  background: linear-gradient(135deg, rgba(255,144,0,0.06), rgba(255,100,0,0.03));
-  border: 1px solid rgba(255,144,0,0.2);
+  background: linear-gradient(135deg, rgba(79,142,247,0.06), rgba(37,99,235,0.03));
+  border: 1px solid rgba(79,142,247,0.2);
   border-radius: 20px;
   padding: 24px;
   margin-bottom: 20px;
@@ -505,7 +578,7 @@ const PaymentBox = styled.div`
 
 const PaymentTitle = styled.div`
   font-size: 11px;
-  color: #666360;
+  color: #6b7db3;
   text-transform: uppercase;
   letter-spacing: 1.5px;
   margin-bottom: 4px;
@@ -524,12 +597,12 @@ const PaymentRow = styled.div`
 `;
 
 const PaymentLabel = styled.span`
-  color: #555061;
+  color: #4a5780;
   font-size: 13px;
 `;
 
 const PaymentValue = styled.span`
-  color: #f4ede8;
+  color: #f0f6ff;
   font-weight: 600;
   display: flex;
   align-items: center;
@@ -539,7 +612,7 @@ const PaymentValue = styled.span`
 const AmountBig = styled.div`
   font-size: 42px;
   font-weight: 800;
-  background: linear-gradient(135deg, #ff9000, #ffb347);
+  background: linear-gradient(135deg, #4f8ef7, #93c5fd);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -548,10 +621,10 @@ const AmountBig = styled.div`
 `;
 
 const CopyBtn = styled.button`
-  background: rgba(255,144,0,0.1);
-  border: 1px solid rgba(255,144,0,0.25);
+  background: rgba(79,142,247,0.1);
+  border: 1px solid rgba(79,142,247,0.25);
   border-radius: 8px;
-  color: #ff9000;
+  color: #4f8ef7;
   padding: 5px 10px;
   font-size: 11px;
   font-weight: 600;
@@ -560,12 +633,12 @@ const CopyBtn = styled.button`
   align-items: center;
   gap: 4px;
   transition: all 0.2s;
-  &:hover { background: rgba(255,144,0,0.18); }
+  &:hover { background: rgba(79,142,247,0.18); }
 `;
 
 const CountdownWrap = styled.div`
-  background: rgba(255,144,0,0.06);
-  border: 1px solid rgba(255,144,0,0.18);
+  background: rgba(79,142,247,0.06);
+  border: 1px solid rgba(79,142,247,0.18);
   border-radius: 14px;
   padding: 16px 20px;
   display: flex;
@@ -577,7 +650,7 @@ const CountdownWrap = styled.div`
 const CountdownTime = styled.span`
   font-size: 26px;
   font-weight: 800;
-  color: ${p => p.$urgent ? '#e05555' : '#ff9000'};
+  color: ${p => p.$urgent ? '#e05555' : '#4f8ef7'};
   font-variant-numeric: tabular-nums;
   animation: ${p => p.$urgent ? pulse : 'none'} 1s ease infinite;
   letter-spacing: 1px;
@@ -613,20 +686,20 @@ const StatusIcon = styled.div`
   border-radius: 50%;
   background: ${p => p.$confirmed
     ? 'linear-gradient(135deg, rgba(76,175,80,0.15), rgba(56,142,60,0.08))'
-    : 'linear-gradient(135deg, rgba(255,144,0,0.12), rgba(255,100,0,0.06))'};
-  border: 2px solid ${p => p.$confirmed ? 'rgba(76,175,80,0.5)' : 'rgba(255,144,0,0.4)'};
+    : 'linear-gradient(135deg, rgba(79,142,247,0.12), rgba(37,99,235,0.06))'};
+  border: 2px solid ${p => p.$confirmed ? 'rgba(76,175,80,0.5)' : 'rgba(79,142,247,0.4)'};
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 20px;
-  box-shadow: 0 0 32px ${p => p.$confirmed ? 'rgba(76,175,80,0.15)' : 'rgba(255,144,0,0.15)'};
+  box-shadow: 0 0 32px ${p => p.$confirmed ? 'rgba(76,175,80,0.15)' : 'rgba(79,142,247,0.15)'};
 `;
 
 const Spinner = styled.div`
   width: 26px;
   height: 26px;
-  border: 3px solid rgba(255,144,0,0.15);
-  border-top-color: #ff9000;
+  border: 3px solid rgba(79,142,247,0.15);
+  border-top-color: #4f8ef7;
   border-radius: 50%;
   animation: ${spin} 0.8s linear infinite;
 `;
@@ -635,12 +708,12 @@ const StatusTitle = styled.h3`
   font-size: 24px;
   font-weight: 800;
   margin-bottom: 8px;
-  color: ${p => p.$confirmed ? '#4caf50' : '#f4ede8'};
+  color: ${p => p.$confirmed ? '#4caf50' : '#f0f6ff'};
 `;
 
 const StatusText = styled.p`
   font-size: 14px;
-  color: #555061;
+  color: #4a5780;
   line-height: 1.7;
   max-width: 340px;
   margin-bottom: 8px;
@@ -653,7 +726,7 @@ const RefCode = styled.div`
   padding: 12px 20px;
   font-family: 'Courier New', monospace;
   font-size: 13px;
-  color: #ff9000;
+  color: #4f8ef7;
   letter-spacing: 1.5px;
   margin: 16px 0;
   display: flex;
@@ -667,10 +740,10 @@ const CTABtn = styled.button`
   padding: 17px;
   background: ${p => p.$ghost
     ? 'transparent'
-    : 'linear-gradient(135deg, #ff9000 0%, #e07000 100%)'};
-  border: ${p => p.$ghost ? '1.5px solid rgba(255,144,0,0.25)' : 'none'};
+    : 'linear-gradient(135deg, #4f8ef7 0%, #2563eb 100%)'};
+  border: ${p => p.$ghost ? '1.5px solid rgba(79,142,247,0.25)' : 'none'};
   border-radius: 16px;
-  color: ${p => p.$ghost ? '#ff9000' : '#0f0d14'};
+  color: ${p => p.$ghost ? '#4f8ef7' : '#fff'};
   font-size: 15px;
   font-weight: 700;
   cursor: pointer;
@@ -684,8 +757,8 @@ const CTABtn = styled.button`
   &:hover:not(:disabled) {
     transform: translateY(-2px);
     box-shadow: ${p => p.$ghost
-      ? '0 4px 20px rgba(255,144,0,0.1)'
-      : '0 8px 32px rgba(255,144,0,0.35)'};
+      ? '0 4px 20px rgba(79,142,247,0.1)'
+      : '0 8px 32px rgba(79,142,247,0.4)'};
   }
   &:disabled { opacity: 0.25; cursor: not-allowed; transform: none; box-shadow: none; }
 `;
@@ -693,7 +766,7 @@ const CTABtn = styled.button`
 const StickyFooter = styled.div`
   position: sticky;
   bottom: 0;
-  background: linear-gradient(to top, #0f0d14 60%, transparent);
+  background: linear-gradient(to top, #080d1c 60%, transparent);
   padding: 20px 0 10px;
   margin-top: 12px;
   @media (min-width: 640px) { position: static; background: none; padding: 8px 0 0; }
@@ -715,8 +788,8 @@ const TrustItem = styled.div`
   align-items: center;
   gap: 6px;
   font-size: 12px;
-  color: #555061;
-  svg { color: #ff9000; }
+  color: #4a5780;
+  svg { color: #4f8ef7; }
 `;
 
 /* ─── Service icon helper ────────────────────────────────── */
@@ -762,8 +835,9 @@ function StepBarber({ preselectedId, onNext }) {
   useEffect(() => {
     api.get('/providers')
       .then(r => {
-        setBarbers(r.data);
-        if (preselectedId && r.data.length > 0) setSelected(Number(preselectedId));
+        const real = r.data.filter(b => BARBER_PHOTOS[b.id]);
+        setBarbers(real);
+        if (preselectedId) setSelected(Number(preselectedId));
       })
       .finally(() => setLoading(false));
   }, []);
@@ -792,32 +866,43 @@ function StepBarber({ preselectedId, onNext }) {
 
       <StepTitle>¿Con quién quieres tu cita?</StepTitle>
       <StepSub>Elige tu barbero para ver los servicios disponibles.</StepSub>
-      <ServiceGrid>
-        {loading
-          ? [1, 2].map(i => <Skeleton key={i} $h="72px" />)
-          : barbers.map(b => (
-            <ServiceCard
-              key={b.id}
-              $active={selected === b.id}
-              onClick={() => setSelected(b.id)}
-            >
-              <ServiceInfo style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
-                <BarberAvatar style={{ width: 44, height: 44, fontSize: 16, flexShrink: 0 }}>
-                  {(b.avatar && b.avatar.url)
-                    ? <img src={b.avatar.url} alt={b.name} />
-                    : b.name[0].toUpperCase()
+
+      {loading
+        ? (
+          <BarberGrid>
+            <Skeleton $h="340px" style={{ borderRadius: 20 }} />
+            <Skeleton $h="340px" style={{ borderRadius: 20 }} />
+          </BarberGrid>
+        )
+        : (
+          <BarberGrid>
+            {barbers.map(b => (
+              <BarberCard
+                key={b.id}
+                $active={selected === b.id}
+                onClick={() => setSelected(b.id)}
+              >
+                <BarberPhoto>
+                  {BARBER_PHOTOS[b.id]
+                    ? <img src={BARBER_PHOTOS[b.id]} alt={b.name} />
+                    : <BarberPhotoFallback>{b.name[0].toUpperCase()}</BarberPhotoFallback>
                   }
-                </BarberAvatar>
-                <div>
-                  <ServiceName>{b.name}</ServiceName>
-                  <ServiceMeta><FiScissors size={11} style={{ marginRight: 4 }} />Barbero profesional</ServiceMeta>
-                </div>
-              </ServiceInfo>
-              {selected === b.id && <FiCheck size={20} color="#ff9000" style={{ flexShrink: 0 }} />}
-            </ServiceCard>
-          ))
-        }
-      </ServiceGrid>
+                  {selected === b.id && (
+                    <BarberSelectedBadge>
+                      <FiCheck size={14} color="#fff" />
+                    </BarberSelectedBadge>
+                  )}
+                </BarberPhoto>
+                <BarberInfo>
+                  <BarberName>{b.name}</BarberName>
+                  <BarberSpec>{BARBER_SPECIALTY[b.id] || 'Barbero profesional'}</BarberSpec>
+                </BarberInfo>
+              </BarberCard>
+            ))}
+          </BarberGrid>
+        )
+      }
+
       <StickyFooter>
         <CTABtn disabled={!selected} onClick={handleNext}>
           Continuar
@@ -842,7 +927,7 @@ function StepService({ barberId, barberName, onNext, onBack }) {
   return (
     <Card>
       <StepTitle>¿Qué servicio necesitas?</StepTitle>
-      <StepSub>Servicios disponibles con <strong style={{ color: '#ff9000' }}>{barberName}</strong>.</StepSub>
+      <StepSub>Servicios disponibles con <strong style={{ color: '#4f8ef7' }}>{barberName}</strong>.</StepSub>
       <ServiceGrid>
         {loading
           ? [1, 2, 3].map(i => <Skeleton key={i} $h="80px" />)
@@ -879,7 +964,7 @@ function StepService({ barberId, barberName, onNext, onBack }) {
   );
 }
 
-/* ─── Step 2: Date + Hour (barber already chosen) ────────── */
+/* ─── Step 2: Date + Hour ────────────────────────────────── */
 function StepSchedule({ barberId, barberName, onNext, onBack }) {
   const [selectedDate, setSelectedDate] = useState(startOfDay(addDays(new Date(), 1)));
   const [selectedHour, setSelectedHour] = useState(null);
@@ -914,9 +999,8 @@ function StepSchedule({ barberId, barberName, onNext, onBack }) {
   return (
     <Card>
       <StepTitle>Elige tu horario</StepTitle>
-      <StepSub>Selecciona el día y hora con <strong style={{ color: '#ff9000' }}>{barberName}</strong>.</StepSub>
+      <StepSub>Selecciona el día y hora con <strong style={{ color: '#4f8ef7' }}>{barberName}</strong>.</StepSub>
 
-      {/* Fecha */}
       <Label><FiCalendar /> Fecha</Label>
       <DaysRow>
         {days.map(day => (
@@ -932,14 +1016,13 @@ function StepSchedule({ barberId, barberName, onNext, onBack }) {
         ))}
       </DaysRow>
 
-      {/* Hora */}
       <Label style={{ marginTop: 8 }}><FiClock /> Hora disponible</Label>
       {loadingSlots
         ? <Skeleton $h="120px" />
         : dayClosed
           ? (
-            <div style={{ padding: '20px', textAlign: 'center', color: '#666360', background: '#232129', borderRadius: 12, fontSize: 14 }}>
-              <FiAlertCircle size={20} style={{ display: 'block', margin: '0 auto 8px', color: '#ff9000' }} />
+            <div style={{ padding: '20px', textAlign: 'center', color: '#6b7db3', background: '#0f1630', borderRadius: 12, fontSize: 14 }}>
+              <FiAlertCircle size={20} style={{ display: 'block', margin: '0 auto 8px', color: '#4f8ef7' }} />
               El local está cerrado este día.
             </div>
           )
@@ -964,9 +1047,7 @@ function StepSchedule({ barberId, barberName, onNext, onBack }) {
         <CTABtn disabled={selectedHour === null || dayClosed} onClick={handleNext}>
           Continuar
         </CTABtn>
-        <CTABtn $ghost onClick={onBack} style={{ marginTop: 8 }}>
-          Atrás
-        </CTABtn>
+        <CTABtn $ghost onClick={onBack} style={{ marginTop: 8 }}>Atrás</CTABtn>
       </StickyFooter>
     </Card>
   );
@@ -1139,9 +1220,9 @@ function StepPayment({ service, schedule, customer, onBookingCreated, onBack }) 
         )
         : (
           <CountdownWrap>
-            <FiClock size={20} color={urgent ? '#e05555' : '#ff9000'} />
+            <FiClock size={20} color={urgent ? '#e05555' : '#4f8ef7'} />
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 12, color: '#666360', marginBottom: 2 }}>Tiempo para pagar</div>
+              <div style={{ fontSize: 12, color: '#6b7db3', marginBottom: 2 }}>Tiempo para pagar</div>
               <CountdownTime $urgent={urgent}>{display}</CountdownTime>
             </div>
           </CountdownWrap>
@@ -1157,7 +1238,7 @@ function StepPayment({ service, schedule, customer, onBookingCreated, onBack }) 
         <PaymentTitle>Instrucciones de pago</PaymentTitle>
 
         <AmountBig>{fmt(inst?.amount)}</AmountBig>
-        <div style={{ fontSize: 13, color: '#666360', marginBottom: 20 }}>COP — anticipo mínimo</div>
+        <div style={{ fontSize: 13, color: '#6b7db3', marginBottom: 20 }}>COP — anticipo mínimo</div>
 
         <PaymentRow>
           <PaymentLabel>Llave {inst?.bank}</PaymentLabel>
@@ -1185,8 +1266,8 @@ function StepPayment({ service, schedule, customer, onBookingCreated, onBack }) 
         </PaymentRow>
       </PaymentBox>
 
-      <div style={{ fontSize: 13, color: '#666360', lineHeight: 1.6, marginBottom: 24 }}>
-        Desde tu banco envía a través de Bre-B exactamente <strong style={{ color: '#ff9000' }}>{fmt(inst?.amount)}</strong> a la llave <strong style={{ color: '#f4ede8' }}>{inst?.llave}</strong> e incluye la referencia <strong style={{ color: '#f4ede8' }}>{inst?.reference}</strong> en el mensaje.
+      <div style={{ fontSize: 13, color: '#6b7db3', lineHeight: 1.6, marginBottom: 24 }}>
+        Desde tu banco envía a través de Bre-B exactamente <strong style={{ color: '#4f8ef7' }}>{fmt(inst?.amount)}</strong> a la llave <strong style={{ color: '#f0f6ff' }}>{inst?.llave}</strong> e incluye la referencia <strong style={{ color: '#f0f6ff' }}>{inst?.reference}</strong> en el mensaje.
       </div>
 
       <CTABtn onClick={() => onBookingCreated(booking.reference)} disabled={expired}>
@@ -1203,7 +1284,7 @@ function StepStatus({ reference }) {
   const [loading, setLoading] = useState(true);
   const pollRef = useRef(null);
 
-  const fetch = useCallback(() => {
+  const fetchStatus = useCallback(() => {
     api.get(`/bookings/${reference}`)
       .then(r => {
         setBooking(r.data);
@@ -1216,13 +1297,13 @@ function StepStatus({ reference }) {
   }, [reference]);
 
   useEffect(() => {
-    fetch();
-    pollRef.current = setInterval(fetch, 5000);
+    fetchStatus();
+    pollRef.current = setInterval(fetchStatus, 5000);
     return () => clearInterval(pollRef.current);
-  }, [fetch]);
+  }, [fetchStatus]);
 
   const isConfirmed = booking?.status === 'CONFIRMED';
-  const isExpired = booking?.status === 'EXPIRED';
+  const isExpired   = booking?.status === 'EXPIRED';
   const isCancelled = booking?.status === 'CANCELLED';
 
   return (
@@ -1273,7 +1354,7 @@ function StepStatus({ reference }) {
             <div style={{ marginTop: 8, textAlign: 'center' }}>
               <a
                 href={`/booking/status/${reference}`}
-                style={{ fontSize: 12, color: '#666360', textDecoration: 'underline' }}
+                style={{ fontSize: 12, color: '#6b7db3', textDecoration: 'underline' }}
               >
                 Ver página de estado
               </a>
@@ -1328,7 +1409,7 @@ function StepStatus({ reference }) {
             )}
 
             {!isConfirmed && !isExpired && !isCancelled && (
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#666360', fontSize: 13, marginTop: 8 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#6b7db3', fontSize: 13, marginTop: 8 }}>
                 <Spinner style={{ width: 14, height: 14, borderWidth: 2 }} />
                 Actualizando cada 5 segundos...
               </div>
@@ -1349,7 +1430,7 @@ export default function BookingStepper() {
   const preselectedBarberId = searchParams.get('barber');
 
   const [step, setStep] = useState(0);
-  const [barber, setBarber] = useState(null);   // { barberId, barberName }
+  const [barber, setBarber] = useState(null);
   const [service, setService] = useState(null);
   const [schedule, setSchedule] = useState(null);
   const [customer, setCustomer] = useState(null);
