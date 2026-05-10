@@ -980,7 +980,7 @@ function StepPayment({ service, schedule, customer, onBookingCreated, onBack }) 
       </PaymentBox>
 
       <div style={{ fontSize: 13, color: '#666360', lineHeight: 1.6, marginBottom: 24 }}>
-        Abre tu app de {inst?.bank || 'banco'}, envía exactamente <strong style={{ color: '#ff9000' }}>{fmt(inst?.amount)}</strong> a la llave <strong style={{ color: '#f4ede8' }}>{inst?.llave}</strong> e incluye la referencia <strong style={{ color: '#f4ede8' }}>{inst?.reference}</strong> en el mensaje.
+        Desde tu banco envía a través de Bre-B exactamente <strong style={{ color: '#ff9000' }}>{fmt(inst?.amount)}</strong> a la llave <strong style={{ color: '#f4ede8' }}>{inst?.llave}</strong> e incluye la referencia <strong style={{ color: '#f4ede8' }}>{inst?.reference}</strong> en el mensaje.
       </div>
 
       <CTABtn onClick={() => onBookingCreated(booking.reference)} disabled={expired}>
