@@ -86,33 +86,45 @@ const Nav = styled.nav`
   z-index: 100;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   gap: 8px;
-  padding: 8px 12px;
-  background: ${p => p.$scrolled ? 'rgba(255,255,255,0.95)' : 'rgba(0,0,0,0.4)'};
-  backdrop-filter: blur(12px);
+  padding: 10px 16px;
+  background: ${p => p.$scrolled ? 'rgba(255,255,255,0.97)' : 'rgba(0,0,0,0.45)'};
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid ${p => p.$scrolled ? 'rgba(79,142,247,0.2)' : 'rgba(255,255,255,0.15)'};
-  border-radius: 12px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+  border-radius: 14px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.18);
   transition: all 0.3s ease;
-  width: auto;
+  width: min(560px, calc(100% - 32px));
 
-  @media (max-width: 600px) { top: 12px; padding: 6px 10px; }
+  @media (max-width: 600px) {
+    top: 10px;
+    padding: 8px 14px;
+    width: calc(100% - 24px);
+    border-radius: 12px;
+  }
 `;
 
 const NavLogo = styled.span`
-  font-size: 20px;
+  font-size: 17px;
   font-weight: 800;
   color: ${p => p.$scrolled ? '#4f8ef7' : '#ffffff'};
-  letter-spacing: 4px;
+  letter-spacing: 3px;
   text-transform: uppercase;
   text-shadow: ${p => p.$scrolled ? 'none' : '0 2px 12px rgba(0,0,0,0.4)'};
   transition: all 0.3s ease;
+  flex-shrink: 0;
+
+  @media (max-width: 400px) {
+    font-size: 13px;
+    letter-spacing: 2px;
+  }
 `;
 
 const NavActions = styled.div`
   display: flex;
-  gap: 12px;
+  gap: 8px;
   align-items: center;
 `;
 
@@ -120,17 +132,18 @@ const NavBtn = styled.button`
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 7px 14px;
+  padding: 8px 16px;
   background: ${p => p.$primary ? '#4f8ef7' : 'rgba(255,255,255,0.12)'};
   color: #ffffff;
   border: 1.5px solid ${p => p.$primary ? '#4f8ef7' : 'rgba(255,255,255,0.5)'};
-  border-radius: 7px;
+  border-radius: 8px;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
   backdrop-filter: blur(4px);
-  text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  white-space: nowrap;
+  letter-spacing: 0.2px;
 
   &:hover {
     background: ${p => p.$primary ? '#2563eb' : 'rgba(255,255,255,0.25)'};
@@ -138,12 +151,10 @@ const NavBtn = styled.button`
     transform: translateY(-1px);
   }
 
-  /* Cuando el nav está scrolled (fondo blanco) */
   ${p => p.$scrolled && `
     background: ${p.$primary ? '#4f8ef7' : 'transparent'};
     color: ${p.$primary ? '#ffffff' : '#1e293b'};
     border-color: ${p.$primary ? '#4f8ef7' : 'rgba(15,23,42,0.2)'};
-    text-shadow: none;
     backdrop-filter: none;
     &:hover {
       background: ${p.$primary ? '#2563eb' : 'rgba(79,142,247,0.08)'};
@@ -153,8 +164,17 @@ const NavBtn = styled.button`
   `}
 
   @media (max-width: 480px) {
-    span { display: none; }
-    padding: 10px;
+    padding: 7px 12px;
+    font-size: 12px;
+    gap: 4px;
+
+    .nav-text-long { display: none; }
+    .nav-text-short { display: inline; }
+  }
+
+  @media (min-width: 481px) {
+    .nav-text-short { display: none; }
+    .nav-text-long { display: inline; }
   }
 `;
 
@@ -230,22 +250,30 @@ const HeroTitle = styled.h1`
 `;
 
 const HeroSub = styled.p`
-  font-size: 18px;
+  font-size: 16px;
   color: rgba(255,255,255,0.85);
-  margin-bottom: 36px;
+  margin-bottom: 28px;
   line-height: 1.6;
   max-width: 500px;
   text-shadow: 0 1px 6px rgba(0,0,0,0.4);
+
+  @media (max-width: 480px) {
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
 `;
 
 const HeroRating = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 32px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
 
   .stars { display: flex; gap: 3px; }
-  .count { color: rgba(255,255,255,0.75); font-size: 14px; }
+  .count { color: rgba(255,255,255,0.75); font-size: 13px; }
+
+  @media (max-width: 480px) { margin-bottom: 20px; gap: 8px; }
 `;
 
 const HeroCTA = styled.button`
@@ -268,19 +296,29 @@ const HeroCTA = styled.button`
     transform: translateY(-2px);
     box-shadow: 0 12px 40px rgba(79,142,247,0.5);
   }
+
+  @media (max-width: 480px) {
+    width: 100%;
+    justify-content: center;
+    padding: 14px 24px;
+    font-size: 15px;
+  }
 `;
 
 /* ─── Info Strip ─────────────────────────────────────────── */
 const InfoStrip = styled.div`
   background: #ffffff;
   border-bottom: 1px solid rgba(79,142,247,0.1);
-  padding: 20px 60px;
+  padding: 16px 60px;
   display: flex;
-  gap: 32px;
-  flex-wrap: wrap;
+  gap: 28px;
   align-items: center;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
 
-  @media (max-width: 768px) { padding: 20px 24px; gap: 16px; }
+  @media (max-width: 768px) { padding: 14px 20px; gap: 20px; }
 `;
 
 const InfoItem = styled.a`
@@ -292,6 +330,8 @@ const InfoItem = styled.a`
   text-decoration: none;
   transition: color 0.2s;
   cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
 
   svg { color: #4f8ef7; flex-shrink: 0; }
 
@@ -685,14 +725,16 @@ export default function Landing() {
 
       {/* NAV */}
       <Nav $scrolled={scrolled}>
-        <div />
+        <NavLogo $scrolled={scrolled}>TROYA</NavLogo>
         <NavActions>
           <NavBtn $scrolled={scrolled} onClick={() => navigate('/login')}>
-            <FiLogIn size={16} />
-            <span>Iniciar sesión</span>
+            <FiLogIn size={15} />
+            <span className="nav-text-long">Iniciar sesión</span>
+            <span className="nav-text-short">Ingresar</span>
           </NavBtn>
           <NavBtn $primary $scrolled={scrolled} onClick={() => navigate('/register')}>
-            <span>Crear cuenta</span>
+            <span className="nav-text-long">Crear cuenta</span>
+            <span className="nav-text-short">Registro</span>
           </NavBtn>
         </NavActions>
       </Nav>

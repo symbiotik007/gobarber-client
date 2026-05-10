@@ -2,6 +2,7 @@
 import { FiX } from 'react-icons/fi';
 import { FaStar, FaStarHalfAlt, FaRegStar } from 'react-icons/fa';
 import { useEffect } from 'react';
+import { colors } from '../styles/colors';
 
 const fadeIn = keyframes`
   from { opacity: 0; }

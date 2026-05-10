@@ -2,6 +2,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import api from '../services/api';
+import { colors } from '../styles/colors';
 
 const Container = styled.div`
   display: flex;
@@ -14,7 +15,7 @@ const Box = styled.div`
   width: 100%;
   max-width: 400px;
   padding: 40px;
-  background: #cbd5e1;
+  background: ${colors.textDisabled};
   border-radius: 10px;
   display: flex;
   flex-direction: column;
@@ -23,12 +24,12 @@ const Box = styled.div`
 
 const Title = styled.h1`
   font-size: 28px;
-  color: #4f8ef7;
+  color: ${colors.primary};
   margin-bottom: 8px;
 `;
 
 const Subtitle = styled.p`
-  color: #64748b;
+  color: ${colors.textMuted};
   margin-bottom: 32px;
   font-size: 14px;
 `;
@@ -36,49 +37,49 @@ const Subtitle = styled.p`
 const Input = styled.input`
   width: 100%;
   padding: 16px;
-  background: #f8faff;
-  border: 2px solid #f8faff;
+  background: ${colors.bgSurface};
+  border: 2px solid ${colors.bgSurface};
   border-radius: 10px;
-  color: #1e293b;
+  color: ${colors.textPrimary};
   margin-bottom: 8px;
   font-size: 16px;
 
   &:focus {
     outline: none;
-    border-color: #4f8ef7;
+    border-color: ${colors.primary};
   }
 
-  &::placeholder { color: #64748b; }
+  &::placeholder { color: ${colors.textMuted}; }
 `;
 
 const Button = styled.button`
   width: 100%;
   padding: 16px;
-  background: #4f8ef7;
+  background: ${colors.primary};
   border: none;
   border-radius: 10px;
-  color: #ffffff;
+  color: ${colors.textOnPrimary};
   font-size: 16px;
   font-weight: bold;
   margin-top: 16px;
   transition: background 0.2s;
 
-  &:hover { background: #2563eb; }
+  &:hover { background: ${colors.primaryDark}; }
   &:disabled { opacity: 0.6; cursor: not-allowed; }
 `;
 
 const Error = styled.p`
-  color: #c53030;
+  color: ${colors.error};
   font-size: 14px;
   margin-bottom: 8px;
 `;
 
 const SignInLink = styled.p`
   margin-top: 24px;
-  color: #64748b;
+  color: ${colors.textMuted};
   font-size: 14px;
 
-  a { color: #4f8ef7; margin-left: 4px; }
+  a { color: ${colors.primary}; margin-left: 4px; }
 `;
 
 export default function SignUp() {
