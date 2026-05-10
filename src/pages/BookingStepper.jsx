@@ -1,10 +1,11 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { format, addDays, startOfDay, parseISO } from 'date-fns';
+import { format, addDays, startOfDay } from 'date-fns';
 import { es } from 'date-fns/locale';
 import styled, { keyframes, createGlobalStyle } from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
-import { FiArrowLeft, FiCheck, FiCopy, FiClock, FiUser, FiMail, FiPhone, FiCalendar, FiScissors, FiAlertCircle, FiShare2 } from 'react-icons/fi';
+import { FiArrowLeft, FiCheck, FiCopy, FiClock, FiUser, FiMail, FiPhone, FiCalendar, FiScissors, FiAlertCircle, FiShare2, FiStar } from 'react-icons/fi';
+import { GiRazor, GiComb, GiScissors, GiMustache } from 'react-icons/gi';
 import api from '../services/api';
 import track, { EVENTS } from '../services/analytics';
 import { haptic, shareBooking } from '../services/mobile';
@@ -12,25 +13,45 @@ import { haptic, shareBooking } from '../services/mobile';
 /* ─── Global ─────────────────────────────────────────────── */
 const Global = createGlobalStyle`
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: #1a1720; color: #f4ede8; font-family: 'Segoe UI', sans-serif; }
+  body {
+    background: #0f0d14;
+    color: #f4ede8;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+  }
 `;
 
 const HOURS = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19];
 const STEPS = ['Barbero', 'Servicio', 'Horario', 'Tus datos', 'Pago', 'Confirmación'];
 
 /* ─── Animations ─────────────────────────────────────────── */
-const fadeIn = keyframes`from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); }`;
-const spin = keyframes`from { transform: rotate(0deg); } to { transform: rotate(360deg); }`;
-const pulse = keyframes`0%,100% { opacity: 1; } 50% { opacity: 0.4; }`;
+const fadeIn    = keyframes`from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); }`;
+const spin      = keyframes`from { transform: rotate(0deg); } to { transform: rotate(360deg); }`;
+const pulse     = keyframes`0%,100% { opacity: 1; } 50% { opacity: 0.4; }`;
+const shimmer   = keyframes`0% { background-position: -600px 0; } 100% { background-position: 600px 0; }`;
+const glowPulse = keyframes`0%,100% { box-shadow: 0 0 20px rgba(255,144,0,0.15); } 50% { box-shadow: 0 0 40px rgba(255,144,0,0.35); }`;
+const floatUp   = keyframes`0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); }`;
 
 /* ─── Layout ─────────────────────────────────────────────── */
 const Page = styled.div`
   min-height: 100vh;
-  background: #1a1720;
+  background:
+    radial-gradient(ellipse 80% 40% at 50% 0%, rgba(255,144,0,0.07) 0%, transparent 70%),
+    #0f0d14;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0 0 80px;
+  padding: 0 0 100px;
+  position: relative;
+  &::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(circle, rgba(255,144,0,0.04) 1px, transparent 1px);
+    background-size: 28px 28px;
+    pointer-events: none;
+    z-index: 0;
+  }
 `;
 
 const TopBar = styled.div`
@@ -40,29 +61,34 @@ const TopBar = styled.div`
   align-items: center;
   gap: 16px;
   padding: 20px 24px 0;
+  position: relative;
+  z-index: 1;
   @media (max-width: 640px) { padding: 16px 16px 0; }
 `;
 
 const BackBtn = styled.button`
-  background: none;
-  border: none;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
   color: #999591;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 6px;
   font-size: 14px;
-  padding: 8px;
-  border-radius: 8px;
-  transition: color 0.2s;
-  &:hover { color: #ff9000; }
+  padding: 8px 12px;
+  border-radius: 10px;
+  transition: all 0.2s;
+  &:hover { color: #ff9000; border-color: rgba(255,144,0,0.4); background: rgba(255,144,0,0.06); }
 `;
 
 const Logo = styled.span`
-  font-size: 18px;
-  font-weight: 700;
-  color: #ff9000;
-  letter-spacing: 1px;
+  font-size: 20px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ff9000, #ffb347);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 3px;
   flex: 1;
   text-align: center;
 `;
@@ -72,36 +98,40 @@ const ProgressWrap = styled.div`
   width: 100%;
   max-width: 640px;
   padding: 24px 24px 0;
+  position: relative;
+  z-index: 1;
   @media (max-width: 640px) { padding: 20px 16px 0; }
 `;
 
 const ProgressTrack = styled.div`
   display: flex;
   align-items: center;
-  gap: 0;
 `;
 
 const StepDot = styled.div`
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   flex-shrink: 0;
-  transition: all 0.3s;
-  background: ${p => p.$done ? '#ff9000' : p.$active ? '#ff9000' : '#2d2b35'};
-  color: ${p => (p.$done || p.$active) ? '#1a1720' : '#666360'};
-  border: 2px solid ${p => p.$done ? '#ff9000' : p.$active ? '#ff9000' : '#3e3b47'};
+  transition: all 0.35s;
+  background: ${p => p.$done ? 'linear-gradient(135deg,#ff9000,#e07000)' : p.$active ? 'linear-gradient(135deg,#ff9000,#ffb347)' : 'rgba(255,255,255,0.04)'};
+  color: ${p => (p.$done || p.$active) ? '#0f0d14' : '#555'};
+  border: 1.5px solid ${p => p.$done ? '#e07000' : p.$active ? '#ff9000' : 'rgba(255,255,255,0.08)'};
+  box-shadow: ${p => p.$active ? '0 0 16px rgba(255,144,0,0.5)' : 'none'};
 `;
 
 const StepLine = styled.div`
   flex: 1;
   height: 2px;
-  background: ${p => p.$done ? '#ff9000' : '#2d2b35'};
-  transition: background 0.3s;
+  background: ${p => p.$done
+    ? 'linear-gradient(90deg,#ff9000,#e07000)'
+    : 'rgba(255,255,255,0.06)'};
+  transition: background 0.35s;
 `;
 
 const StepLabels = styled.div`
@@ -111,12 +141,13 @@ const StepLabels = styled.div`
 `;
 
 const StepLabel = styled.span`
-  font-size: 10px;
-  color: ${p => p.$active ? '#ff9000' : p.$done ? '#999591' : '#4a4757'};
-  font-weight: ${p => p.$active ? '600' : '400'};
+  font-size: 9px;
+  color: ${p => p.$active ? '#ff9000' : p.$done ? '#666360' : '#333'};
+  font-weight: ${p => p.$active ? '700' : '400'};
   text-align: center;
-  width: 64px;
-  margin-left: -16px;
+  width: 60px;
+  margin-left: -15px;
+  letter-spacing: 0.3px;
   &:first-child { margin-left: 0; }
 `;
 
@@ -126,91 +157,174 @@ const Card = styled.div`
   max-width: 640px;
   margin: 0 auto;
   padding: 32px 24px;
-  animation: ${fadeIn} 0.3s ease;
+  animation: ${fadeIn} 0.35s ease;
+  position: relative;
+  z-index: 1;
   @media (max-width: 640px) { padding: 24px 16px; }
 `;
 
 const StepTitle = styled.h2`
-  font-size: 22px;
-  font-weight: 700;
+  font-size: 24px;
+  font-weight: 800;
   margin-bottom: 6px;
+  color: #f4ede8;
+  letter-spacing: -0.3px;
 `;
 
 const StepSub = styled.p`
   font-size: 14px;
-  color: #666360;
+  color: #555061;
   margin-bottom: 28px;
+  line-height: 1.6;
+`;
+
+/* ─── Hero banner (Step 0) ───────────────────────────────── */
+const HeroBanner = styled.div`
+  background: linear-gradient(135deg, rgba(255,144,0,0.08) 0%, rgba(255,100,0,0.04) 100%);
+  border: 1px solid rgba(255,144,0,0.12);
+  border-radius: 20px;
+  padding: 28px 24px;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  overflow: hidden;
+  position: relative;
+  &::after {
+    content: '✂';
+    position: absolute;
+    right: -10px;
+    top: -10px;
+    font-size: 80px;
+    opacity: 0.04;
+    transform: rotate(30deg);
+    pointer-events: none;
+  }
+`;
+
+const HeroText = styled.div``;
+
+const HeroTitle = styled.div`
+  font-size: 17px;
+  font-weight: 700;
+  color: #f4ede8;
+  margin-bottom: 4px;
+`;
+
+const HeroSub = styled.div`
+  font-size: 13px;
+  color: #666360;
   line-height: 1.5;
+`;
+
+const HeroIconWrap = styled.div`
+  width: 60px;
+  height: 60px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(255,144,0,0.2), rgba(255,100,0,0.1));
+  border: 1px solid rgba(255,144,0,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  animation: ${floatUp} 3s ease-in-out infinite;
+  color: #ff9000;
 `;
 
 /* ─── Services ───────────────────────────────────────────── */
 const ServiceGrid = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 `;
 
 const ServiceCard = styled.button`
-  background: ${p => p.$active ? 'rgba(255,144,0,0.12)' : '#232129'};
-  border: 2px solid ${p => p.$active ? '#ff9000' : 'transparent'};
-  border-radius: 14px;
+  background: ${p => p.$active
+    ? 'linear-gradient(135deg, rgba(255,144,0,0.1), rgba(255,100,0,0.06))'
+    : 'rgba(255,255,255,0.025)'};
+  border: 1.5px solid ${p => p.$active ? '#ff9000' : 'rgba(255,255,255,0.06)'};
+  border-radius: 16px;
   padding: 18px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
   text-align: left;
-  transition: all 0.2s;
-  &:hover { border-color: rgba(255,144,0,0.4); background: #2a2730; }
+  transition: all 0.22s;
+  box-shadow: ${p => p.$active ? '0 4px 24px rgba(255,144,0,0.15)' : 'none'};
+  &:hover {
+    border-color: rgba(255,144,0,0.5);
+    background: rgba(255,144,0,0.05);
+    transform: translateY(-1px);
+  }
 `;
 
 const ServiceInfo = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
 `;
 
 const ServiceName = styled.span`
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 700;
   color: #f4ede8;
 `;
 
 const ServiceMeta = styled.span`
-  font-size: 13px;
-  color: #666360;
+  font-size: 12px;
+  color: #555061;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 `;
 
 const ServicePrice = styled.div`
   text-align: right;
+  flex-shrink: 0;
 `;
 
 const PriceTotal = styled.div`
-  font-size: 18px;
-  font-weight: 700;
-  color: #ff9000;
+  font-size: 19px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ff9000, #ffb347);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 `;
 
 const PriceDeposit = styled.div`
-  font-size: 12px;
-  color: #666360;
-  margin-top: 2px;
+  font-size: 11px;
+  color: #444;
+  margin-top: 3px;
+`;
+
+const ServiceIconWrap = styled.div`
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: rgba(255,144,0,0.08);
+  border: 1px solid rgba(255,144,0,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ff9000;
+  flex-shrink: 0;
+  margin-right: 14px;
 `;
 
 /* ─── Skeleton ───────────────────────────────────────────── */
-const shimmer = keyframes`
-  0% { background-position: -400px 0; }
-  100% { background-position: 400px 0; }
-`;
-
 const Skeleton = styled.div`
-  background: linear-gradient(90deg, #2a2730 25%, #332f3c 50%, #2a2730 75%);
-  background-size: 800px 100%;
-  animation: ${shimmer} 1.4s ease infinite;
-  border-radius: 14px;
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0.03) 25%,
+    rgba(255,255,255,0.06) 50%,
+    rgba(255,255,255,0.03) 75%);
+  background-size: 1200px 100%;
+  animation: ${shimmer} 1.6s ease infinite;
+  border-radius: 16px;
   height: ${p => p.$h || '72px'};
   width: ${p => p.$w || '100%'};
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 `;
 
 /* ─── Barbers ─────────────────────────────────────────────── */
@@ -222,33 +336,37 @@ const BarberGrid = styled.div`
 `;
 
 const BarberBtn = styled.button`
-  background: ${p => p.$active ? 'rgba(255,144,0,0.15)' : '#232129'};
-  border: 2px solid ${p => p.$active ? '#ff9000' : 'transparent'};
-  border-radius: 12px;
-  padding: 12px 18px;
+  background: ${p => p.$active
+    ? 'linear-gradient(135deg, rgba(255,144,0,0.12), rgba(255,100,0,0.06))'
+    : 'rgba(255,255,255,0.025)'};
+  border: 1.5px solid ${p => p.$active ? '#ff9000' : 'rgba(255,255,255,0.06)'};
+  border-radius: 14px;
+  padding: 14px 20px;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 10px;
-  transition: all 0.2s;
+  gap: 12px;
+  transition: all 0.22s;
   color: #f4ede8;
   font-size: 14px;
-  font-weight: ${p => p.$active ? '600' : '400'};
-  &:hover { border-color: rgba(255,144,0,0.4); }
+  font-weight: ${p => p.$active ? '700' : '400'};
+  box-shadow: ${p => p.$active ? '0 4px 20px rgba(255,144,0,0.15)' : 'none'};
+  &:hover { border-color: rgba(255,144,0,0.5); transform: translateY(-1px); }
 `;
 
 const BarberAvatar = styled.div`
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  background: #ff9000;
-  color: #1a1720;
-  font-weight: 700;
-  font-size: 14px;
+  background: linear-gradient(135deg, #ff9000, #e07000);
+  color: #0f0d14;
+  font-weight: 800;
+  font-size: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  box-shadow: 0 2px 12px rgba(255,144,0,0.3);
   img { width: 100%; height: 100%; object-fit: cover; }
 `;
 
@@ -264,22 +382,25 @@ const DaysRow = styled.div`
 `;
 
 const DayBtn = styled.button`
-  background: ${p => p.$active ? '#ff9000' : '#232129'};
-  color: ${p => p.$active ? '#1a1720' : '#f4ede8'};
-  border: none;
-  border-radius: 12px;
-  padding: 12px 16px;
-  min-width: 72px;
+  background: ${p => p.$active
+    ? 'linear-gradient(135deg, #ff9000, #e07000)'
+    : 'rgba(255,255,255,0.03)'};
+  color: ${p => p.$active ? '#0f0d14' : '#f4ede8'};
+  border: 1.5px solid ${p => p.$active ? 'transparent' : 'rgba(255,255,255,0.06)'};
+  border-radius: 14px;
+  padding: 12px 14px;
+  min-width: 68px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 2px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.22s;
   flex-shrink: 0;
-  &:hover { background: ${p => p.$active ? '#e08000' : '#2d2b35'}; }
-  strong { font-size: 22px; font-weight: 700; }
-  span { font-size: 11px; text-transform: capitalize; }
+  box-shadow: ${p => p.$active ? '0 4px 16px rgba(255,144,0,0.3)' : 'none'};
+  &:hover { border-color: rgba(255,144,0,0.5); transform: translateY(-1px); }
+  strong { font-size: 22px; font-weight: 800; line-height: 1; }
+  span { font-size: 10px; text-transform: capitalize; opacity: ${p => p.$active ? 0.8 : 0.5}; }
 `;
 
 /* ─── Hours ──────────────────────────────────────────────── */
@@ -291,16 +412,19 @@ const HoursGrid = styled.div`
 `;
 
 const HourBtn = styled.button`
-  background: ${p => p.$active ? '#ff9000' : p.$disabled ? '#1e1c26' : '#232129'};
-  color: ${p => p.$active ? '#1a1720' : p.$disabled ? '#3e3b47' : '#f4ede8'};
-  border: 2px solid ${p => p.$active ? '#ff9000' : 'transparent'};
-  border-radius: 10px;
-  padding: 12px 8px;
-  font-size: 14px;
-  font-weight: ${p => p.$active ? '700' : '400'};
+  background: ${p => p.$active
+    ? 'linear-gradient(135deg, #ff9000, #e07000)'
+    : p.$disabled ? 'rgba(255,255,255,0.01)' : 'rgba(255,255,255,0.04)'};
+  color: ${p => p.$active ? '#0f0d14' : p.$disabled ? '#2a2830' : '#ccc8c4'};
+  border: 1.5px solid ${p => p.$active ? 'transparent' : p.$disabled ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.07)'};
+  border-radius: 12px;
+  padding: 13px 8px;
+  font-size: 13px;
+  font-weight: ${p => p.$active ? '700' : '500'};
   cursor: ${p => p.$disabled ? 'not-allowed' : 'pointer'};
   transition: all 0.2s;
-  &:hover:not(:disabled) { border-color: rgba(255,144,0,0.4); }
+  box-shadow: ${p => p.$active ? '0 3px 12px rgba(255,144,0,0.3)' : 'none'};
+  &:hover:not(:disabled) { border-color: rgba(255,144,0,0.5); transform: translateY(-1px); }
 `;
 
 /* ─── Form ───────────────────────────────────────────────── */
@@ -312,42 +436,50 @@ const Label = styled.label`
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 13px;
-  color: #999591;
+  font-size: 12px;
+  color: #666360;
   margin-bottom: 8px;
-  font-weight: 500;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   svg { color: #ff9000; }
 `;
 
 const Input = styled.input`
   width: 100%;
   padding: 14px 16px;
-  background: #232129;
-  border: 2px solid ${p => p.$error ? '#e05555' : 'rgba(255,144,0,0.15)'};
-  border-radius: 10px;
+  background: rgba(255,255,255,0.04);
+  border: 1.5px solid ${p => p.$error ? '#e05555' : 'rgba(255,255,255,0.08)'};
+  border-radius: 12px;
   color: #f4ede8;
   font-size: 15px;
-  transition: border-color 0.2s;
-  &:focus { outline: none; border-color: #ff9000; }
-  &::placeholder { color: #4a4757; }
+  transition: all 0.2s;
+  &:focus {
+    outline: none;
+    border-color: #ff9000;
+    background: rgba(255,144,0,0.04);
+    box-shadow: 0 0 0 3px rgba(255,144,0,0.08);
+  }
+  &::placeholder { color: #2e2c38; }
 `;
 
 const FieldError = styled.span`
   font-size: 12px;
   color: #e05555;
-  margin-top: 4px;
+  margin-top: 5px;
   display: block;
 `;
 
 /* ─── Summary box ────────────────────────────────────────── */
 const SummaryBox = styled.div`
-  background: #232129;
-  border-radius: 14px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 16px;
   padding: 20px;
   margin-bottom: 24px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 `;
 
 const SummaryRow = styled.div`
@@ -357,36 +489,44 @@ const SummaryRow = styled.div`
   font-size: 14px;
   color: ${p => p.$highlight ? '#ff9000' : '#f4ede8'};
   font-weight: ${p => p.$highlight ? '700' : '400'};
-  span:first-child { color: #666360; }
+  span:first-child { color: #444; font-size: 13px; }
+  ${p => p.$highlight && 'border-top: 1px solid rgba(255,255,255,0.06); padding-top: 12px;'}
 `;
 
 /* ─── Payment box ────────────────────────────────────────── */
 const PaymentBox = styled.div`
-  background: linear-gradient(135deg, #1e1b28, #252230);
-  border: 1px solid rgba(255,144,0,0.25);
-  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(255,144,0,0.06), rgba(255,100,0,0.03));
+  border: 1px solid rgba(255,144,0,0.2);
+  border-radius: 20px;
   padding: 24px;
   margin-bottom: 20px;
+  animation: ${glowPulse} 3s ease-in-out infinite;
 `;
 
 const PaymentTitle = styled.div`
-  font-size: 13px;
-  color: #999591;
+  font-size: 11px;
+  color: #666360;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 16px;
+  letter-spacing: 1.5px;
+  margin-bottom: 4px;
+  font-weight: 600;
 `;
 
 const PaymentRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   font-size: 14px;
-  &:last-child { margin-bottom: 0; }
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  &:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
 `;
 
-const PaymentLabel = styled.span`color: #666360;`;
+const PaymentLabel = styled.span`
+  color: #555061;
+  font-size: 13px;
+`;
 
 const PaymentValue = styled.span`
   color: #f4ede8;
@@ -397,59 +537,65 @@ const PaymentValue = styled.span`
 `;
 
 const AmountBig = styled.div`
-  font-size: 36px;
-  font-weight: 700;
-  color: #ff9000;
-  margin: 16px 0 4px;
+  font-size: 42px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ff9000, #ffb347);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 12px 0 2px;
+  line-height: 1;
 `;
 
 const CopyBtn = styled.button`
-  background: none;
-  border: 1px solid rgba(255,144,0,0.3);
-  border-radius: 6px;
+  background: rgba(255,144,0,0.1);
+  border: 1px solid rgba(255,144,0,0.25);
+  border-radius: 8px;
   color: #ff9000;
-  padding: 4px 8px;
+  padding: 5px 10px;
   font-size: 11px;
+  font-weight: 600;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 4px;
   transition: all 0.2s;
-  &:hover { background: rgba(255,144,0,0.1); }
+  &:hover { background: rgba(255,144,0,0.18); }
 `;
 
 const CountdownWrap = styled.div`
-  background: rgba(255,144,0,0.08);
-  border: 1px solid rgba(255,144,0,0.2);
-  border-radius: 12px;
-  padding: 16px;
+  background: rgba(255,144,0,0.06);
+  border: 1px solid rgba(255,144,0,0.18);
+  border-radius: 14px;
+  padding: 16px 20px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   margin-bottom: 20px;
 `;
 
 const CountdownTime = styled.span`
-  font-size: 22px;
-  font-weight: 700;
+  font-size: 26px;
+  font-weight: 800;
   color: ${p => p.$urgent ? '#e05555' : '#ff9000'};
   font-variant-numeric: tabular-nums;
   animation: ${p => p.$urgent ? pulse : 'none'} 1s ease infinite;
+  letter-spacing: 1px;
 `;
 
 const AlertBox = styled.div`
-  background: rgba(224,85,85,0.1);
-  border: 1px solid rgba(224,85,85,0.3);
-  border-radius: 12px;
+  background: rgba(224,85,85,0.07);
+  border: 1px solid rgba(224,85,85,0.2);
+  border-radius: 14px;
   padding: 14px 16px;
   display: flex;
   gap: 10px;
   align-items: flex-start;
   margin-bottom: 20px;
   font-size: 13px;
-  color: #e05555;
+  color: #c06060;
   line-height: 1.5;
-  svg { flex-shrink: 0; margin-top: 2px; }
+  svg { flex-shrink: 0; margin-top: 1px; }
 `;
 
 /* ─── Confirmation ───────────────────────────────────────── */
@@ -462,50 +608,53 @@ const ConfirmWrap = styled.div`
 `;
 
 const StatusIcon = styled.div`
-  width: 72px;
-  height: 72px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
-  background: ${p => p.$confirmed ? 'rgba(76,175,80,0.15)' : 'rgba(255,144,0,0.1)'};
-  border: 2px solid ${p => p.$confirmed ? '#4caf50' : '#ff9000'};
+  background: ${p => p.$confirmed
+    ? 'linear-gradient(135deg, rgba(76,175,80,0.15), rgba(56,142,60,0.08))'
+    : 'linear-gradient(135deg, rgba(255,144,0,0.12), rgba(255,100,0,0.06))'};
+  border: 2px solid ${p => p.$confirmed ? 'rgba(76,175,80,0.5)' : 'rgba(255,144,0,0.4)'};
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 20px;
-  font-size: 28px;
+  box-shadow: 0 0 32px ${p => p.$confirmed ? 'rgba(76,175,80,0.15)' : 'rgba(255,144,0,0.15)'};
 `;
 
 const Spinner = styled.div`
-  width: 24px;
-  height: 24px;
-  border: 3px solid rgba(255,144,0,0.2);
+  width: 26px;
+  height: 26px;
+  border: 3px solid rgba(255,144,0,0.15);
   border-top-color: #ff9000;
   border-radius: 50%;
   animation: ${spin} 0.8s linear infinite;
 `;
 
 const StatusTitle = styled.h3`
-  font-size: 22px;
-  font-weight: 700;
+  font-size: 24px;
+  font-weight: 800;
   margin-bottom: 8px;
   color: ${p => p.$confirmed ? '#4caf50' : '#f4ede8'};
 `;
 
 const StatusText = styled.p`
   font-size: 14px;
-  color: #666360;
-  line-height: 1.6;
-  max-width: 360px;
+  color: #555061;
+  line-height: 1.7;
+  max-width: 340px;
   margin-bottom: 8px;
 `;
 
 const RefCode = styled.div`
-  background: #232129;
-  border-radius: 10px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
   padding: 12px 20px;
-  font-family: monospace;
-  font-size: 15px;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
   color: #ff9000;
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
   margin: 16px 0;
   display: flex;
   align-items: center;
@@ -515,34 +664,69 @@ const RefCode = styled.div`
 /* ─── CTA ────────────────────────────────────────────────── */
 const CTABtn = styled.button`
   width: 100%;
-  padding: 16px;
-  background: ${p => p.$ghost ? 'transparent' : 'linear-gradient(135deg, #ff9000, #e08000)'};
-  border: ${p => p.$ghost ? '2px solid rgba(255,144,0,0.3)' : 'none'};
-  border-radius: 14px;
-  color: ${p => p.$ghost ? '#ff9000' : '#1a1720'};
-  font-size: 16px;
+  padding: 17px;
+  background: ${p => p.$ghost
+    ? 'transparent'
+    : 'linear-gradient(135deg, #ff9000 0%, #e07000 100%)'};
+  border: ${p => p.$ghost ? '1.5px solid rgba(255,144,0,0.25)' : 'none'};
+  border-radius: 16px;
+  color: ${p => p.$ghost ? '#ff9000' : '#0f0d14'};
+  font-size: 15px;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.22s;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin-top: 8px;
-  &:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(255,144,0,0.3); }
-  &:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+  margin-top: 10px;
+  letter-spacing: 0.2px;
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: ${p => p.$ghost
+      ? '0 4px 20px rgba(255,144,0,0.1)'
+      : '0 8px 32px rgba(255,144,0,0.35)'};
+  }
+  &:disabled { opacity: 0.25; cursor: not-allowed; transform: none; box-shadow: none; }
 `;
 
 const StickyFooter = styled.div`
   position: sticky;
   bottom: 0;
-  background: linear-gradient(to top, #1a1720 70%, transparent);
-  padding: 16px 0 8px;
-  margin-top: 8px;
-  @media (min-width: 640px) { position: static; background: none; padding: 0; }
+  background: linear-gradient(to top, #0f0d14 60%, transparent);
+  padding: 20px 0 10px;
+  margin-top: 12px;
+  @media (min-width: 640px) { position: static; background: none; padding: 8px 0 0; }
 `;
 
 const Divider = styled.div`height: 12px;`;
+
+/* ─── Badges / misc ──────────────────────────────────────── */
+const TrustBar = styled.div`
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+`;
+
+const TrustItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #555061;
+  svg { color: #ff9000; }
+`;
+
+/* ─── Service icon helper ────────────────────────────────── */
+function ServiceIcon({ name }) {
+  const n = (name || '').toLowerCase();
+  if (n.includes('barba')) return <GiMustache size={18} />;
+  if (n.includes('ceja') || n.includes('henna')) return <FiScissors size={16} />;
+  if (n.includes('corte')) return <GiScissors size={18} />;
+  return <GiComb size={18} />;
+}
 
 /* ─── Helpers ────────────────────────────────────────────── */
 function fmt(n) {
@@ -592,6 +776,20 @@ function StepBarber({ preselectedId, onNext }) {
 
   return (
     <Card>
+      <HeroBanner>
+        <HeroIconWrap><GiScissors size={28} /></HeroIconWrap>
+        <HeroText>
+          <HeroTitle>Tu estilo, tu cita ✦</HeroTitle>
+          <HeroSub>Reserva en minutos. Anticipo seguro, horario garantizado.</HeroSub>
+        </HeroText>
+      </HeroBanner>
+
+      <TrustBar>
+        <TrustItem><FiStar size={12} />Barberos certificados</TrustItem>
+        <TrustItem><FiClock size={12} />Confirmación inmediata</TrustItem>
+        <TrustItem><GiRazor size={12} />Cortes premium</TrustItem>
+      </TrustBar>
+
       <StepTitle>¿Con quién quieres tu cita?</StepTitle>
       <StepSub>Elige tu barbero para ver los servicios disponibles.</StepSub>
       <ServiceGrid>
@@ -654,16 +852,18 @@ function StepService({ barberId, barberName, onNext, onBack }) {
               $active={selected?.id === s.id}
               onClick={() => setSelected(s)}
             >
-              <ServiceInfo>
-                <ServiceName>{s.name}</ServiceName>
-                <ServiceMeta>
-                  <FiClock size={11} style={{ marginRight: 4 }} />
-                  {s.duration_minutes} min
-                </ServiceMeta>
-              </ServiceInfo>
+              <div style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
+                <ServiceIconWrap><ServiceIcon name={s.name} /></ServiceIconWrap>
+                <ServiceInfo>
+                  <ServiceName>{s.name}</ServiceName>
+                  <ServiceMeta>
+                    <FiClock size={11} />{s.duration_minutes} min
+                  </ServiceMeta>
+                </ServiceInfo>
+              </div>
               <ServicePrice>
                 <PriceTotal>{fmt(s.price)}</PriceTotal>
-                <PriceDeposit>Anticipo desde {fmt(s.deposit_range.min)}</PriceDeposit>
+                <PriceDeposit>Anticipo {fmt(s.deposit_range.min)}</PriceDeposit>
               </ServicePrice>
             </ServiceCard>
           ))
